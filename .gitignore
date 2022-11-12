@@ -1,0 +1,17 @@
+# Windows
+[Dd]esktop.ini
+Thumbs.db
+$RECYCLE.BIN/
+
+# macOS
+.idea
+.DS_Store
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+
+.vscode
+
+# Node.js
+/wx/miniprogram/node_modules/
