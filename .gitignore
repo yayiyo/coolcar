@@ -14,4 +14,4 @@ $RECYCLE.BIN/
 .vscode
 
 # Node.js
-/wx/miniprogram/node_modules/
+wx/node_modules

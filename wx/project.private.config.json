@@ -4,5 +4,6 @@
   "setting": {
     "compileHotReLoad": true,
     "preloadBackgroundData": false
-  }
+  },
+  "libVersion": "2.24.7"
 }
