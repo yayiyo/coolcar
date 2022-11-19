@@ -12,7 +12,7 @@ App<IAppOption>({
             rejectUserInfo = reject
         })
     },
-    onLaunch() {
+    async onLaunch() {
         // 展示本地存储能力
         const logs = wx.getStorageSync('logs') || []
         logs.unshift(Date.now())
@@ -28,19 +28,15 @@ App<IAppOption>({
             },
         })
 
-        // 获取用户信息
-        getSetting().then(res => {
-            if (res.authSetting['scope.userInfo']) {
-                return getUserProfile()
+        try {
+            const setting = await getSetting()
+            if (setting.authSetting['scope.userInfo']) {
+                const userProfile = await getUserProfile()
+                resolveUserInfo(userProfile.userInfo)
             }
-            return undefined
-        }).then(res => {
-            if (!res) {
-                return
-            }
-            resolveUserInfo(res.userInfo)
-            // }).catch(err => reject(err))
-        }).catch(rejectUserInfo)
+        } catch (err) {
+            rejectUserInfo(err)
+        }
     },
     resolveUserInfo(userInfo: WechatMiniprogram.UserInfo) {
         resolveUserInfo(userInfo)
