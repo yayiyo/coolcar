@@ -5,5 +5,18 @@
     "compileHotReLoad": true,
     "preloadBackgroundData": false
   },
-  "libVersion": "2.27.2"
+  "libVersion": "2.27.2",
+  "condition": {
+    "miniprogram": {
+      "list": [
+        {
+          "name": "",
+          "pathName": "pages/learncss/learncss",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        }
+      ]
+    }
+  }
 }

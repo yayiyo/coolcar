@@ -1,12 +1,20 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/logs/logs"
+    "pages/learncss/learncss"
+  ],
+  "permission": {
+    "scope.userLocation": {
+      "desc": "你的位置信息将用于小程序显示当前位置"
+    }
+  },
+  "requiredPrivateInfos": [
+    "getLocation"
   ],
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#fff",
-    "navigationBarTitleText": "Weixin",
+    "navigationBarTitleText": "租辆酷车",
     "navigationBarTextStyle": "black"
   },
   "style": "v2",

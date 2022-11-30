@@ -1,19 +1,25 @@
-/**index.wxss**/
-.userinfo {
+page {
+    width: 100%;
+    height: 100%;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+}
+
+.icon-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    color: #aaa;
+    justify-content: space-between;
+    width: 100rpx;
+    height: 148rpx;
+    margin-top: 41rpx;
+    /* opacity: .5; */
 }
 
-.userinfo-avatar {
-    overflow: hidden;
-    width: 128rpx;
-    height: 128rpx;
-    margin: 20rpx;
-    border-radius: 50%;
-}
-
-.usermotto {
-    margin-top: 200px;
+.icon-container cover-image {
+    width: 60rpx;
+    height: 60rpx;
 }
