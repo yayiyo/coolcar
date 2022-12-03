@@ -4,6 +4,7 @@
 const app = getApp<IAppOption>()
 
 Page({
+    isPageShowing: false,
     data: {
         setting: {
             skew: 0,
@@ -22,8 +23,8 @@ Page({
             enableTraffic: false,
         },
         location: {
-            latitude: 31,
-            longitude: 120,
+            latitude: 23.0009343,
+            longitude: 113.36299,
         },
         scale: 10,
         markers: [
@@ -40,14 +41,6 @@ Page({
                 id: 1,
                 latitude: 23.6329420,
                 longitude: 114.692635,
-                width: 20,
-                height: 20
-            },
-            {
-                iconPath: "/resources/car.png",
-                id: 2,
-                latitude: 29.47294735,
-                longitude: 113.6329432,
                 width: 20,
                 height: 20
             }
@@ -70,5 +63,53 @@ Page({
                 })
             }
         })
+    },
+    onScanClicked() {
+        wx.scanCode({
+            success: res => {
+                console.log(res)
+                wx.navigateTo({
+                    url: '/pages/register/register'
+                })
+            },
+            fail: console.error,
+        })
+    },
+    onHide() {
+        this.isPageShowing = false
+    },
+
+    onShow() {
+        this.isPageShowing = true
+    },
+    moveCars() {
+        const map = wx.createMapContext("map")
+        const dest = {
+            latitude: this.data.markers[0].latitude,
+            longitude: this.data.markers[0].longitude,
+        }
+
+        const moveCar = () => {
+            dest.latitude += 0.1
+            dest.longitude += 0.1
+            map.translateMarker({
+                destination: {
+                    latitude: dest.latitude,
+                    longitude: dest.longitude,
+                },
+                markerId: 0,
+                autoRotate: false,
+                rotate: 0,
+                duration: 5000,
+                animationEnd: () => {
+                    this.data.markers[0].latitude = dest.latitude
+                    this.data.markers[0].longitude = dest.longitude
+                    if (this.isPageShowing) {
+                        moveCar()
+                    }
+                }
+            })
+        }
+        moveCar()
     }
 })
