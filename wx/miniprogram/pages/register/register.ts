@@ -9,7 +9,8 @@ Page({
     genderIndex: 0,
     genders: ['未知', '男', '女', '其他'],
     birthDate: '1993-06-01',
-    licImgURL: undefined as string | undefined
+    licImgURL: '',
+    state: 'UNSUBMIITED' as 'UNSUBMIITED' | 'PEDING' | 'VERIFIED',
   },
 
   onUploadLic() {
@@ -43,6 +44,32 @@ Page({
   onBirthDateChange(e: any) {
     this.setData({
       birthDate: e.detail.value
+    })
+  },
+
+  onSubmit() {
+    this.setData({
+      state: 'PEDING',
+    })
+
+    setTimeout(() => {
+      this.onLicVerify()
+    }, 3000);
+  },
+
+  onResubmit() {
+    this.setData({
+      state: 'UNSUBMIITED',
+      licImgURL: '',
+    })
+  },
+
+  onLicVerify() {
+    this.setData({
+      state: 'VERIFIED',
+    })
+    wx.redirectTo({
+      url: '/pages/lock/lock',
     })
   },
 })

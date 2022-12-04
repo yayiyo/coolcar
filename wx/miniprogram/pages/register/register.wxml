@@ -11,15 +11,28 @@
 	<block wx:else>
 		<view class="lic-tmpl">
 			<image class="stretch" src="{{licImgURL}}" />
+			<image
+			 wx:if="{{state==='VERIFIED'}}"
+			 src="/resources/check.png"
+			 class="check"
+			/>
 		</view>
 		<view class="lic-form   margin-top-xl">
 			<view class="cu-form-group">
 				<view class="title">驾驶证号</view>
-				<input placeholder="驾驶证号" value="{{licNo}}" />
+				<input
+				 placeholder="驾驶证号"
+				 value="{{licNo}}"
+				 disabled="{{state!=='UNSUBMIITED'}}"
+				/>
 			</view>
 			<view class="cu-form-group">
 				<view class="title">姓名</view>
-				<input placeholder="姓名" value="{{name}}" />
+				<input
+				 placeholder="姓名"
+				 value="{{name}}"
+				 disabled="{{state!=='UNSUBMIITED'}}"
+				/>
 			</view>
 			<view class="cu-form-group">
 				<view class="title">性别</view>
@@ -27,6 +40,7 @@
 				 bindchange="onGenderChange"
 				 value="{{genderIndex}}"
 				 range="{{genders}}"
+				 disabled="{{state!=='UNSUBMIITED'}}"
 				>
 					<view class="picker">{{genders[genderIndex]}}</view>
 				</picker>
@@ -37,12 +51,33 @@
 				 mode="date"
 				 value="{{birthDate}}"
 				 bindchange="onBirthDateChange"
+				 disabled="{{state!=='UNSUBMIITED'}}"
 				>
 					<view class="picker">{{birthDate}}</view>
 				</picker>
 			</view>
 		</view>
-		<button class="cu-btn bg-red lg  margin-top-xl">递交审查</button>
+		<button
+		 class="cu-btn bg-red lg  margin-top-xl"
+		 wx:if="{{state==='UNSUBMIITED'}}"
+		 bindtap="onSubmit"
+		>
+			递交审查
+		</button>
+		<button
+		 class="cu-btn block line-blue margin-top-xl lg"
+		 wx:if="{{state==='PEDING'}}"
+		 disabled
+		>
+			审查中
+		</button>
+		<button
+		 class="cu-btn bg-red lg  margin-top-xl"
+		 wx:if="{{state==='VERIFIED'}}"
+		 bindtap="onResubmit"
+		>
+			重新审查
+		</button>
 	</block>
 </view>
 

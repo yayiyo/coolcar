@@ -5,6 +5,7 @@ const app = getApp<IAppOption>()
 
 Page({
     isPageShowing: false,
+    avatarURL: '',
     data: {
         setting: {
             skew: 0,
@@ -45,6 +46,12 @@ Page({
                 height: 20
             }
         ]
+    },
+    onLoad() {
+        const avatarURL = wx.getStorageSync('avatar')
+        this.setData({
+            avatarURL,
+        })
     },
     onMyLocationTap() {
         wx.getLocation({

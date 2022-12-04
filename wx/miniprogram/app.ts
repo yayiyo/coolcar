@@ -1,6 +1,6 @@
 // app.ts
 
-import {getSetting, getUserProfile} from "./utils/util";
+import { getSetting, getUserProfile } from "./utils/util";
 
 let resolveUserInfo: (value: (WechatMiniprogram.UserInfo | PromiseLike<WechatMiniprogram.UserInfo>)) => void
 let rejectUserInfo: (reason?: any) => void
@@ -10,7 +10,7 @@ App<IAppOption>({
         userInfo: new Promise((resolve, reject) => {
             resolveUserInfo = resolve
             rejectUserInfo = reject
-        })
+        }),
     },
     async onLaunch() {
         // 展示本地存储能力
@@ -40,5 +40,5 @@ App<IAppOption>({
     },
     resolveUserInfo(userInfo: WechatMiniprogram.UserInfo) {
         resolveUserInfo(userInfo)
-    }
+    },
 })
