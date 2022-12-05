@@ -13,15 +13,14 @@ page {
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    width: 100rpx;
-    height: 148rpx;
-    margin-top: 41rpx;
-    /* opacity: .5; */
+    width: 120rpx;
+    height: 190rpx;
+    margin-top: 100rpx;
 }
 
-.icon-container cover-image {
-    width: 60rpx;
-    height: 60rpx;
+.icon-container image {
+    width: 80rpx;
+    height: 80rpx;
 }
 
 .btn-container {

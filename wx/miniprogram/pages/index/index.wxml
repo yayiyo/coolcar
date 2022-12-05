@@ -8,17 +8,12 @@
  enable-3D="{{is3D}}"
  markers="{{markers}}"
 >
-	<cover-view class="icon-container">
-		<cover-image
-		 wx:if="{{avatarURL}}"
-		 class="round"
-		 src="{{avatarURL}}"
-		/>
-		<cover-image wx:if="{{!avatarURL}}" src="/resources/account.png" />
-		<cover-image bindtap="onMyLocationTap" src="/resources/my_location.png" />
-	</cover-view>
-	<cover-view class="btn-container bg-grey round" bindtap="onScanClicked">
-		<cover-view>扫码租车</cover-view>
-	</cover-view>
+	<view class="icon-container">
+		<image class="round" src="{{avatarURL?avatarURL:'/resources/account.png'}}" />
+		<image bindtap="onMyLocationTap" src="/resources/my_location.png" />
+	</view>
+	<view class="btn-container bg-grey round" bindtap="onScanClicked">
+		<view>扫码租车</view>
+	</view>
 </map>
 
