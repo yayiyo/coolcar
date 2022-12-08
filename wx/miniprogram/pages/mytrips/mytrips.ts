@@ -1,3 +1,5 @@
+import { routing } from "../../utils/routing"
+
 Page({
   data: {
     promotionItems: [
@@ -44,7 +46,7 @@ Page({
   },
   onRegisterTap() {
     wx.navigateTo({
-      url: '/pages/register/register',
+      url: routing.register(),
     })
   }
 })

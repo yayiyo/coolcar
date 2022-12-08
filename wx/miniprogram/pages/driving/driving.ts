@@ -1,3 +1,5 @@
+import { routing } from "../../utils/routing"
+
 // 每秒一分钱
 const centPerSec = 0.8
 
@@ -29,8 +31,9 @@ Page({
     fee: '0.00',
   },
 
-  onLoad(opt) {
-    console.log('current trip', opt.trip_id)
+  onLoad(opt: Record<'trip_id', string>) {
+    const o: routing.DriveOpts = opt
+    console.log('current trip', o.trip_id)
     this.setupLocationUpdator()
     this.setupTimer()
   },
@@ -67,7 +70,11 @@ Page({
         fee: formatFee(cents),
       })
     }, 1000)
-  }
+  },
 
-  // TODO: 结束行程
+  onEndTripTap() {
+    wx.redirectTo({
+      url: routing.index(),
+    })
+  }
 })

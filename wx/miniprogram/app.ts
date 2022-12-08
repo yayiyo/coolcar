@@ -1,6 +1,6 @@
 // app.ts
 
-import { getSetting, getUserProfile } from "./utils/util";
+import { getSetting, getUserProfile } from "./utils/wxapi";
 
 let resolveUserInfo: (value: (WechatMiniprogram.UserInfo | PromiseLike<WechatMiniprogram.UserInfo>)) => void
 let rejectUserInfo: (reason?: any) => void

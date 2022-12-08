@@ -1,3 +1,5 @@
+import { routing } from "../../utils/routing"
+
 // pages/register/register.ts
 Page({
   /**
@@ -14,10 +16,11 @@ Page({
     state: 'UNSUBMIITED' as 'UNSUBMIITED' | 'PEDING' | 'VERIFIED',
   },
 
-  onLoad(opt) {
-    console.log('register ', opt)
-    if (opt.redirect) {
-      this.redirectURL = decodeURIComponent(opt.redirect)
+  onLoad(opt: Record<'redirect', string>) {
+    const o: routing.RegisterOpts = opt
+    console.log('register ', o.redirect)
+    if (o.redirect) {
+      this.redirectURL = decodeURIComponent(o.redirect)
     }
   },
 

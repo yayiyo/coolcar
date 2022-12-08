@@ -1,11 +1,14 @@
+import { routing } from "../../utils/routing"
+
 Page({
   data: {
     avatarUrl: '',
   },
 
-  onLoad(opt) {
-    console.log(opt)
-    console.log('unloack car', opt.car_id)
+  onLoad(opt: Record<'car_id', string>) {
+    const o: routing.LockOpts = opt
+    console.log(o)
+    console.log('unloack car', o.car_id)
   },
   onChooseAvatar(e: any) {
     console.log(e)
@@ -34,7 +37,9 @@ Page({
 
         setTimeout(function () {
           wx.redirectTo({
-            url: `/pages/driving/driving?trip_id=${tripID}`,
+            url: routing.driving({
+              trip_id: tripID,
+            }),
           })
         }, 3000)
       },
