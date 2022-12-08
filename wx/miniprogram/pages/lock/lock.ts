@@ -2,6 +2,11 @@ Page({
   data: {
     avatarUrl: '',
   },
+
+  onLoad(opt) {
+    console.log(opt)
+    console.log('unloack car', opt.car_id)
+  },
   onChooseAvatar(e: any) {
     console.log(e)
     const { avatarUrl } = e.detail
@@ -21,13 +26,15 @@ Page({
           avatarURL: this.data.avatarUrl,
         })
 
+        const tripID = '2324'
+
         wx.showLoading({
           title: '开锁中',
         })
 
         setTimeout(function () {
           wx.redirectTo({
-            url: '/pages/driving/driving',
+            url: `/pages/driving/driving?trip_id=${tripID}`,
           })
         }, 3000)
       },

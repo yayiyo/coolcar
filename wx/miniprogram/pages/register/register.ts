@@ -3,6 +3,7 @@ Page({
   /**
    * 页面的初始数据
    */
+  redirectURL: '',
   data: {
     licNo: '',
     name: '',
@@ -11,6 +12,13 @@ Page({
     birthDate: '1993-06-01',
     licImgURL: '',
     state: 'UNSUBMIITED' as 'UNSUBMIITED' | 'PEDING' | 'VERIFIED',
+  },
+
+  onLoad(opt) {
+    console.log('register ', opt)
+    if (opt.redirect) {
+      this.redirectURL = decodeURIComponent(opt.redirect)
+    }
   },
 
   onUploadLic() {
@@ -68,8 +76,10 @@ Page({
     this.setData({
       state: 'VERIFIED',
     })
-    wx.redirectTo({
-      url: '/pages/lock/lock',
-    })
+    if (this.redirectURL) {
+      wx.redirectTo({
+        url: this.redirectURL,
+      })
+    }
   },
 })

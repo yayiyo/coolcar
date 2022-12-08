@@ -9,10 +9,14 @@
  markers="{{markers}}"
 >
 	<view class="icon-container">
-		<image class="round" src="{{avatarURL?avatarURL:'/resources/account.png'}}" />
+		<image
+		 class="round"
+		 src="{{avatarURL?avatarURL:'/resources/account.png'}}"
+		 bindtap="onMyTripsTap"
+		/>
 		<image bindtap="onMyLocationTap" src="/resources/my_location.png" />
 	</view>
-	<view class="btn-container bg-grey round" bindtap="onScanClicked">
+	<view class="btn-container bg-grey round" bindtap="onScanTap">
 		<view>扫码租车</view>
 	</view>
 </map>

@@ -71,12 +71,14 @@ Page({
             }
         })
     },
-    onScanClicked() {
+    onScanTap() {
         wx.scanCode({
             success: res => {
                 console.log(res)
+                const car_id = '88888'
+                const redirectURL = `/pages/lock/lock?car_id=${car_id}`
                 wx.navigateTo({
-                    url: '/pages/register/register'
+                    url: `/pages/register/register?redirect=${encodeURIComponent(redirectURL)}`,
                 })
             },
             fail: console.error,
@@ -118,5 +120,10 @@ Page({
             })
         }
         moveCar()
+    },
+    onMyTripsTap() {
+        wx.navigateTo({
+            url: '/pages/mytrips/mytrips',
+        })
     }
 })
