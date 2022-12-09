@@ -7,6 +7,19 @@ interface Trip {
   duration: string
   fee: string
   distance: string
+  status: string
+}
+
+interface MainItem {
+  id: string
+  navId: string
+  data: Trip
+}
+
+interface NavItem {
+  id: string
+  mainId: string
+  label: string
 }
 
 Page({
@@ -31,7 +44,12 @@ Page({
     ],
     avatarURL: '',
     tripsHeight: 0,
-    trips: [] as Trip[],
+    navCount: 0,
+    mainItems: [] as MainItem[],
+    mainScroll: '',
+    navItems: [] as NavItem[],
+    navSel: '',
+    navScr: '',
   },
 
   onLoad() {
@@ -45,26 +63,50 @@ Page({
   onReady() {
     wx.createSelectorQuery().select('#heading')
       .boundingClientRect(res => {
+        const height = wx.getSystemInfoSync().windowHeight - res.height
         this.setData({
-          tripsHeight: wx.getSystemInfoSync().windowHeight - res.height,
+          tripsHeight: height,
+          navCount: Math.round(height / 50),
         })
       }).exec()
   },
 
   populateTrips() {
-    const trips: Trip[] = []
+    const mainItems: MainItem[] = []
+    const navItems: NavItem[] = []
+    let navSel = ''
     for (let i = 0; i < 100; i++) {
-      trips.push({
-        id: (10001 + i).toString(),
-        start: '北京',
-        end: '上海',
-        duration: '72时44分55秒',
-        fee: '28888元',
-        distance: '2000KM',
+      const mainId = 'main-' + i
+      const navId = 'nav-' + i
+      const trip_id = (10001 + i).toString()
+      mainItems.push({
+        id: mainId,
+        navId: navId,
+        data: {
+          id: trip_id,
+          start: '北京',
+          end: '上海',
+          duration: '72时44分55秒',
+          fee: '28888元',
+          distance: '2000KM',
+          status: '已结束',
+        },
       })
+
+      navItems.push({
+        id: navId,
+        mainId: mainId,
+        label: trip_id
+      })
+
+      if (i === 0) {
+        navSel = navId
+      }
     }
     this.setData({
-      trips,
+      mainItems,
+      navItems,
+      navSel,
     })
   },
 
@@ -86,5 +128,26 @@ Page({
     wx.navigateTo({
       url: routing.register(),
     })
+  },
+
+  onNavItemTap(e: any) {
+    const mainId: string = e.currentTarget?.dataset?.mainId
+    const navId: string = e.currentTarget?.id
+    if (mainId && navId) {
+      this.setData({
+        mainScroll: mainId,
+        navSel: navId,
+      })
+    }
+  },
+
+  onMainItemTap(e: any) {
+    console.log(e)
+    const navId = e.currentTarget?.dataset?.navId
+    if (navId) {
+      this.setData({
+        navScr: navId,
+      })
+    }
   }
 })

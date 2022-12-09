@@ -5,6 +5,7 @@
     </swiper-item>
   </swiper>
   <view class="avatar-container margin-top margin-right-xl">
+    <view class="text-xl mytrips-heading">我的行程</view>
     <view class="avatar margin-right">
       <button wx:if="{{!avatarURL}}" class="cu-avatar round lg bg-grey margin-xs" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
         <text class="cuIcon-people" />
@@ -14,35 +15,44 @@
     <view class="text-blue" bindtap="onRegisterTap">驾驶资格未认证</view>
   </view>
 </view>
-<scroll-view style="height: {{tripsHeight}}px" scroll-y scroll-with-animation enable-back-to-top>
-  <view wx:for="{{trips}}" wx:key="id" class="bg-white margin-bottom margin-lr padding-bottom trip main-item">
-    <view class="cu-bar solid-bottom bg-white">
-      <view class="action">
-        <text class="cuIcon-title text-green">{{item.id}}</text>
+<view class="nav-container">
+  <swiper duration="500" display-multiple-items="{{navCount}}" vertical style="height: {{tripsHeight}}px" class="bg-white nav" current-item-id="{{navScr}}">
+    <swiper-item wx:for="{{navItems}}" wx:key="id" id="{{item.id}}" item-id="{{item.id}}" data-main-id="{{item.mainId}}" class="cu-item {{navSel===item.id?'text-green':''}}" bindtap="onNavItemTap">
+      <view>{{item.label}}</view>
+      <view wx:if="{{navSel===item.id}}" class="cur"></view>
+    </swiper-item>
+  </swiper>
+  <scroll-view style="height: {{tripsHeight}}px" scroll-into-view="{{mainScroll}}" scroll-y scroll-with-animation enable-back-to-top>
+    <view wx:for="{{mainItems}}" wx:key="id" class="bg-white margin-bottom margin-lr padding-bottom trip main-item" id="{{item.id}}" data-nav-id="{{item.navId}}" bindtap="onMainItemTap">
+      <view class="cu-bar solid-bottom padding-right">
+        <view class="action">
+          <text class="cuIcon-title text-green">{{item.data.id}}</text>
+        </view>
+        <view>{{item.data.status}}</view>
+      </view>
+      <view class="trip-detail padding-right">
+        <view class="detail-l">
+          <view class="detail-row">
+            <view class="field padding-lr">起</view>
+            <view class="value text-black text-bold">{{item.data.start}}</view>
+          </view>
+          <view class="detail-row">
+            <view class="field padding-lr">终</view>
+            <view class="value text-black text-bold">{{item.data.end}}</view>
+          </view>
+          <view class="detail-row">
+            <view class="field padding-lr">距</view>
+            <view class="value text-black text-bold">{{item.data.distance}}</view>
+          </view>
+          <view class="detail-row">
+            <view class="field padding-lr">时</view>
+            <view class="value text-black text-bold">{{item.data.duration}}</view>
+          </view>
+        </view>
+        <view class="detail-r">
+          <view class="fee text-xxl text-price text-bold">{{item.data.fee}}</view>
+        </view>
       </view>
     </view>
-    <view class="trip-detail padding-right">
-      <view class="detail-l">
-        <view class="detail-row">
-          <view class="field padding-lr">起</view>
-          <view class="value text-black text-bold">{{item.start}}</view>
-        </view>
-        <view class="detail-row">
-          <view class="field padding-lr">终</view>
-          <view class="value text-black text-bold">{{item.end}}</view>
-        </view>
-        <view class="detail-row">
-          <view class="field padding-lr">距</view>
-          <view class="value text-black text-bold">{{item.distance}}</view>
-        </view>
-        <view class="detail-row">
-          <view class="field padding-lr">时</view>
-          <view class="value text-black text-bold">{{item.duration}}</view>
-        </view>
-      </view>
-      <view class="detail-r">
-        <view class="fee text-xxl text-price text-bold">{{item.fee}}</view>
-      </view>
-    </view>
-  </view>
-</scroll-view>
+  </scroll-view>
+</view>

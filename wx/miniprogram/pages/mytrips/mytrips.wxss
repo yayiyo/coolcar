@@ -1,8 +1,3 @@
-swiper {
-    width: 750rpx;
-    height: 306rpx;
-}
-
 .swiper-image {
     width: 100%;
     height: 100%;
