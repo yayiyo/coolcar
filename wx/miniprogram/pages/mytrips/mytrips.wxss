@@ -24,7 +24,6 @@ swiper {
 
 .fee {
     font-style: italic;
-    padding-right: 24rpx;
 }
 
 .trip-detail {
