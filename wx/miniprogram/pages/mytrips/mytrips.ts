@@ -13,6 +13,7 @@ interface Trip {
 interface MainItem {
   id: string
   navId: string
+  navScrollId: string
   data: Trip
 }
 
@@ -22,7 +23,19 @@ interface NavItem {
   label: string
 }
 
+interface MainItemQueryResult {
+  id: string
+  top: number
+  dataset: {
+    navId: string
+    navScrollId: string
+  }
+}
+
 Page({
+  scrollStates: {
+    mainItems: [] as MainItemQueryResult[]
+  },
   data: {
     promotionItems: [
       {
@@ -75,13 +88,18 @@ Page({
     const mainItems: MainItem[] = []
     const navItems: NavItem[] = []
     let navSel = ''
+    let prevNav = ''
     for (let i = 0; i < 100; i++) {
       const mainId = 'main-' + i
       const navId = 'nav-' + i
       const trip_id = (10001 + i).toString()
+      if (!prevNav) {
+        prevNav = navId
+      }
       mainItems.push({
         id: mainId,
         navId: navId,
+        navScrollId: prevNav,
         data: {
           id: trip_id,
           start: '北京',
@@ -102,12 +120,27 @@ Page({
       if (i === 0) {
         navSel = navId
       }
+
+      prevNav = navId
     }
     this.setData({
       mainItems,
       navItems,
       navSel,
+    }, () => {
+      this.prepareScrollStates()
     })
+  },
+
+  prepareScrollStates() {
+    wx.createSelectorQuery().selectAll('.main-item')
+      .fields({
+        id: true,
+        dataset: true,
+        rect: true,
+      }).exec(res => {
+        this.scrollStates.mainItems = res[0]
+      })
   },
 
   onPromotionItemTap(e: any) {
@@ -141,13 +174,21 @@ Page({
     }
   },
 
-  onMainItemTap(e: any) {
-    console.log(e)
-    const navId = e.currentTarget?.dataset?.navId
-    if (navId) {
-      this.setData({
-        navScr: navId,
-      })
+  onMainScroll(e: any) {
+    const top: number = e.currentTarget?.offsetTop + e.detail?.scrollTop
+    if (top === undefined) {
+      return
     }
-  }
+
+    const selItem = this.scrollStates.mainItems.find(
+      v => v.top >= top)
+    if (!selItem) {
+      return
+    }
+
+    this.setData({
+      navSel: selItem.dataset.navId,
+      navScr: selItem.dataset.navScrollId,
+    })
+  },
 })

@@ -22,8 +22,8 @@
       <view wx:if="{{navSel===item.id}}" class="cur"></view>
     </swiper-item>
   </swiper>
-  <scroll-view style="height: {{tripsHeight}}px" scroll-into-view="{{mainScroll}}" scroll-y scroll-with-animation enable-back-to-top>
-    <view wx:for="{{mainItems}}" wx:key="id" class="bg-white margin-bottom margin-lr padding-bottom trip main-item" id="{{item.id}}" data-nav-id="{{item.navId}}" bindtap="onMainItemTap">
+  <scroll-view scroll-y scroll-with-animation enable-back-to-top style="height: {{tripsHeight}}px" scroll-into-view="{{mainScroll}}" bindscroll="onMainScroll">
+    <view wx:for="{{mainItems}}" wx:key="id" class="bg-white margin-bottom margin-lr padding-bottom trip main-item" id="{{item.id}}" data-nav-id="{{item.navId}}" data-nav-scroll-id="{{item.navScrollId}}">
       <view class="cu-bar solid-bottom padding-right">
         <view class="action">
           <text class="cuIcon-title text-green">{{item.data.id}}</text>

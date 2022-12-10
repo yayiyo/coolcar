@@ -76,13 +76,18 @@ Page({
     onScanTap() {
         wx.scanCode({
             success: res => {
-                console.log(res)
-                const car_id = '88888'
-                const redirectURL = routing.lock({ car_id })
-                wx.navigateTo({
-                    url: routing.register({
-                        redirectURL,
-                    }),
+                wx.showModal({
+                    title: '提示',
+                    content: '需要进行驾驶证认证',
+                    success: () => {
+                        const car_id = '88888'
+                        const redirectURL = routing.lock({ car_id })
+                        wx.navigateTo({
+                            url: routing.register({
+                                redirectURL,
+                            }),
+                        })
+                    }
                 })
             },
             fail: console.error,
