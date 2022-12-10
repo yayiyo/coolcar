@@ -47,7 +47,7 @@ Page({
                 width: 20,
                 height: 20
             }
-        ]
+        ],
     },
     onLoad() {
         const avatarURL = wx.getStorageSync('avatar')
@@ -75,11 +75,10 @@ Page({
     },
     onScanTap() {
         wx.scanCode({
-            success: res => {
-                wx.showModal({
-                    title: '提示',
-                    content: '需要进行驾驶证认证',
-                    success: () => {
+            success: async () => {
+                await this.selectComponent('#licModal').showModal().then((res: 'ok' | 'cancel' | 'close') => {
+                    console.log(res)
+                    if (res === 'ok') {
                         const car_id = '88888'
                         const redirectURL = routing.lock({ car_id })
                         wx.navigateTo({
@@ -134,5 +133,5 @@ Page({
         wx.navigateTo({
             url: routing.mytrips(),
         })
-    }
+    },
 })
