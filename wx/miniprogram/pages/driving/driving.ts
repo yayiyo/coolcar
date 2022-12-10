@@ -74,7 +74,7 @@ Page({
 
   onEndTripTap() {
     wx.redirectTo({
-      url: routing.index(),
+      url: routing.mytrips(),
     })
   }
 })
