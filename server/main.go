@@ -11,6 +11,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/protobuf/encoding/protojson"
 )
 
 func main() {
@@ -32,7 +33,14 @@ func startGRPCGateway() {
 	c, cancel := context.WithCancel(c)
 	defer cancel()
 
-	mux := runtime.NewServeMux()
+	mux := runtime.NewServeMux(runtime.WithMarshalerOption(
+		runtime.MIMEWildcard, &runtime.JSONPb{
+			protojson.MarshalOptions{
+				UseEnumNumbers: true,
+				UseProtoNames:  true,
+			},
+			protojson.UnmarshalOptions{},
+		}))
 	err := trippb.RegisterTripServiceHandlerFromEndpoint(
 		c,
 		mux,
