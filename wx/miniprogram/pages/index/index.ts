@@ -50,6 +50,13 @@ Page({
         ],
     },
     onLoad() {
+        wx.request({
+            url:'http://localhost:8080/trip/624683',
+            method: 'GET',
+            success: console.log,
+            fail: console.error,
+        })
+
         const avatarURL = wx.getStorageSync('avatar')
         this.setData({
             avatarURL,

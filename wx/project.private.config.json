@@ -3,7 +3,8 @@
   "projectname": "coolcar",
   "setting": {
     "compileHotReLoad": true,
-    "preloadBackgroundData": false
+    "preloadBackgroundData": false,
+    "urlCheck": false
   },
   "libVersion": "2.27.2",
   "condition": {
