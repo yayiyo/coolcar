@@ -4,7 +4,8 @@
   "setting": {
     "compileHotReLoad": true,
     "preloadBackgroundData": false,
-    "urlCheck": false
+    "urlCheck": false,
+    "autoAudits": true
   },
   "libVersion": "2.27.2",
   "condition": {
