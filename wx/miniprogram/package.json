@@ -6,7 +6,9 @@
   "keywords": [],
   "author": "",
   "license": "",
-  "dependencies": {},
+  "dependencies": {
+    "@protobuf-ts/plugin": "^2.8.2"
+  },
   "devDependencies": {
     "miniprogram-api-typings": "3.6.0"
   }

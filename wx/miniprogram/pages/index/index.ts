@@ -3,6 +3,7 @@
 
 import { IAppOption } from "../../appoption"
 import { routing } from "../../utils/routing"
+import {GetTripResponse} from "../../service/proto_gen/trip";
 
 const app = getApp<IAppOption>()
 
@@ -54,7 +55,11 @@ Page({
         wx.request({
             url:'http://localhost:8080/trip/624683',
             method: 'GET',
-            success: console.log,
+            success: res =>{
+                console.log(res);
+                const resp = GetTripResponse.fromJson(res.data as string)
+                console.log(resp)
+            },
             fail: console.error,
         })
 
