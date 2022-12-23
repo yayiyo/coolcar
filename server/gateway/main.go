@@ -3,11 +3,9 @@ package main
 import (
 	"context"
 	"log"
-	"net"
 	"net/http"
 
-	"coolcar/proto/gen/go"
-	"coolcar/service/trip"
+	authpb "coolcar/auth/api/gen/v1"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -15,33 +13,19 @@ import (
 )
 
 func main() {
-	log.SetFlags(log.Lshortfile)
-	go startGRPCGateway()
-	l, err := net.Listen("tcp", ":8081")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	s := grpc.NewServer()
-
-	trippb.RegisterTripServiceServer(s, &trip.Service{})
-	log.Fatal(s.Serve(l))
-}
-
-func startGRPCGateway() {
 	c := context.Background()
 	c, cancel := context.WithCancel(c)
 	defer cancel()
 
-	mux := runtime.NewServeMux(runtime.WithMarshalerOption(
-		runtime.MIMEWildcard, &runtime.JSONPb{
-			protojson.MarshalOptions{
-				UseEnumNumbers: true,
-				UseProtoNames:  true,
-			},
-			protojson.UnmarshalOptions{},
-		}))
-	err := trippb.RegisterTripServiceHandlerFromEndpoint(
+	mux := runtime.NewServeMux(runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{
+		MarshalOptions: protojson.MarshalOptions{
+			UseEnumNumbers: true,
+			UseProtoNames:  true,
+		},
+		UnmarshalOptions: protojson.UnmarshalOptions{},
+	}))
+
+	err := authpb.RegisterAuthServiceHandlerFromEndpoint(
 		c,
 		mux,
 		":8081",

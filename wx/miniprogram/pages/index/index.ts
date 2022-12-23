@@ -1,9 +1,8 @@
 // index.ts
 // 获取应用实例
 
-import { IAppOption } from "../../appoption"
-import { routing } from "../../utils/routing"
-import {GetTripResponse} from "../../service/proto_gen/trip";
+import {IAppOption} from "../../appoption"
+import {routing} from "../../utils/routing"
 
 const app = getApp<IAppOption>()
 
@@ -52,17 +51,6 @@ Page({
         ],
     },
     onLoad() {
-        wx.request({
-            url:'http://localhost:8080/trip/624683',
-            method: 'GET',
-            success: res =>{
-                console.log(res);
-                const resp = GetTripResponse.fromJson(res.data as string)
-                console.log(resp)
-            },
-            fail: console.error,
-        })
-
         const avatarURL = wx.getStorageSync('avatar')
         this.setData({
             avatarURL,
@@ -93,7 +81,7 @@ Page({
                     console.log(res)
                     if (res === 'ok') {
                         const car_id = '88888'
-                        const redirectURL = routing.lock({ car_id })
+                        const redirectURL = routing.lock({car_id})
                         wx.navigateTo({
                             url: routing.register({
                                 redirectURL,
