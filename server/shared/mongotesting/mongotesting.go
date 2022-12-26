@@ -1,10 +1,10 @@
-package main
+package mongotesting
 
 import (
 	"context"
 	"fmt"
 	"log"
-	"time"
+	"testing"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
@@ -12,20 +12,25 @@ import (
 	"github.com/docker/go-connections/nat"
 )
 
-func main() {
+const (
+	imageName     = "mongo:4.4"
+	containerPort = "27017/tcp"
+)
+
+func RunMongoInDocker(m *testing.M, mongoURI *string) int {
 	c, err := client.NewClientWithOpts(client.FromEnv)
 	if err != nil {
 		panic(err)
 	}
 
 	container, err := c.ContainerCreate(context.Background(), &container.Config{
-		Image: "mongo:4.4",
+		Image: imageName,
 		ExposedPorts: map[nat.Port]struct{}{
-			"27017/tcp": {},
+			containerPort: {},
 		},
 	}, &container.HostConfig{
 		PortBindings: map[nat.Port][]nat.PortBinding{
-			"27017/tcp": {
+			containerPort: {
 				{
 					HostIP:   "127.0.0.1",
 					HostPort: "0",
@@ -34,29 +39,32 @@ func main() {
 		},
 	}, nil, nil, "")
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
+
+	defer func() {
+		err = c.ContainerRemove(context.Background(), container.ID, types.ContainerRemoveOptions{
+			Force: true,
+		})
+
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println("mongodb container stopped")
+	}()
 
 	err = c.ContainerStart(context.Background(), container.ID, types.ContainerStartOptions{})
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
-
-	time.Sleep(5 * time.Second)
-
 	fmt.Println("mongodb container started")
 	inspect, err := c.ContainerInspect(context.Background(), container.ID)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("mongodb container listening on port %s\n", inspect.NetworkSettings.Ports["27017/tcp"][0].HostPort)
-	err = c.ContainerRemove(context.Background(), container.ID, types.ContainerRemoveOptions{
-		Force: true,
-	})
-
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println("mongodb container stopped")
+	fmt.Printf("mongodb container listening on port %s\n", inspect.NetworkSettings.Ports[containerPort][0].HostPort)
+	*mongoURI = fmt.Sprintf("mongodb://%s:%s", inspect.NetworkSettings.Ports[containerPort][0].HostIP,
+		inspect.NetworkSettings.Ports[containerPort][0].HostPort)
+	return m.Run()
 }

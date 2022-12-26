@@ -4,31 +4,28 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 	"testing"
 
+	"coolcar/shared/mongotesting"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-var db *mongo.Database
+var (
+	mongoURI string
+)
 
 func TestMain(m *testing.M) {
-	c := context.Background()
-	client, err := mongo.Connect(c, options.Client().ApplyURI("mongodb://localhost:27017"))
-	if err != nil {
-		log.Fatal(err)
-	}
-	err = client.Ping(c, readpref.Primary())
-	if err != nil {
-		log.Fatal(err)
-	}
-	db = client.Database("coolcar")
-	m.Run()
+	os.Exit(mongotesting.RunMongoInDocker(m, &mongoURI))
 }
 
 func TestResolveAccountID(t *testing.T) {
-	m := NewMongo(db)
+	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(mongoURI))
+	if err != nil {
+		log.Fatal(err)
+	}
+	m := NewMongo(client.Database("coolcar"))
 	account, err := m.ResolveAccountID(context.Background(), "123")
 	if err != nil {
 		log.Fatal(err)
