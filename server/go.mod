@@ -4,6 +4,7 @@ go 1.18
 
 require (
 	github.com/docker/docker v20.10.22+incompatible
+	github.com/docker/go-connections v0.4.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.14.0
 	github.com/medivhzhan/weapp/v2 v2.5.0
 	go.mongodb.org/mongo-driver v1.11.1
@@ -15,9 +16,9 @@ require (
 require (
 	github.com/Microsoft/go-winio v0.6.0 // indirect
 	github.com/docker/distribution v2.8.1+incompatible // indirect
-	github.com/docker/go-connections v0.4.0 // indirect
 	github.com/docker/go-units v0.5.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
+	github.com/golang-jwt/jwt/v4 v4.4.3 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/klauspost/compress v1.13.6 // indirect

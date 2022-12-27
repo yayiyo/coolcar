@@ -17,3 +17,5 @@ $RECYCLE.BIN/
 wx/miniprogram/node_modules
 wx/miniprogram/**/*.js
 wx/miniprogram/miniprogram_npm/*
+
+server/auth/private.key
