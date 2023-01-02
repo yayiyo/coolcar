@@ -51,7 +51,7 @@ func main() {
 			AppID:     "wx006574c1921658af",
 			AppSecret: "8bde3a5eb25d40cd58501ed7e3dca226",
 		},
-		TokenGenerator: token.NewJWTTokenGen("coolcar/auth", key),
+		TokenGenerator: token.NewJWTGenerator("coolcar/auth", key),
 		TokenExpire:    2 * time.Hour,
 		Mongo:          dao.NewMongo(client.Database("coolcar")),
 		Logger:         logger,

@@ -3,6 +3,7 @@
 import {getSetting, getUserProfile} from "./utils/wxapi";
 import {IAppOption} from "./appoption"
 import {LoginRequest, LoginResponse} from "./service/proto_gen/auth/auth";
+import {CreateTripRequest} from "./service/proto_gen/rental/rental";
 
 let resolveUserInfo: (value: (WechatMiniprogram.UserInfo | PromiseLike<WechatMiniprogram.UserInfo>)) => void
 let rejectUserInfo: (reason?: any) => void
@@ -33,12 +34,22 @@ App<IAppOption>({
                     data: {
                         code: res.code,
                     } as LoginRequest,
-                    success:result => {
+                    success: result => {
                         console.log(result)
                         const res = LoginResponse.fromJson(result.data as string)
                         console.log(res)
+                        wx.request({
+                            url: 'http://localhost:8080/v1/trip',
+                            method: 'POST',
+                            data: {
+                                start: 'abcd',
+                            } as CreateTripRequest,
+                            header: {
+                                authorization: 'Bearer ' + res.accessToken
+                            }
+                        })
                     },
-                    fail:console.error,
+                    fail: console.error,
                 })
             },
         })

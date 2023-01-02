@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	authpb "coolcar/auth/api/gen/v1"
+	rentalpb "coolcar/rental/api/gen/v1"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -35,7 +36,20 @@ func main() {
 	)
 
 	if err != nil {
-		log.Fatalf("can not start grpc gateway: %v", err)
+		log.Fatalf("can not start auth grpc gateway: %v", err)
+	}
+
+	err = rentalpb.RegisterTripServiceHandlerFromEndpoint(
+		c,
+		mux,
+		":8082",
+		[]grpc.DialOption{
+			grpc.WithTransportCredentials(insecure.NewCredentials()),
+		},
+	)
+
+	if err != nil {
+		log.Fatalf("can not start rental grpc gateway: %v", err)
 	}
 
 	err = http.ListenAndServe(":8080", mux)

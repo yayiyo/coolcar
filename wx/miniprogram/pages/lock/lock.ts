@@ -9,6 +9,10 @@ Page({
     const o: routing.LockOpts = opt
     console.log(o)
     console.log('unloack car', o.car_id)
+    const avatarUrl = wx.getStorageSync('avatar')
+    this.setData({
+      avatarUrl,
+    })
   },
   onChooseAvatar(e: any) {
     console.log(e)
