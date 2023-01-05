@@ -2,8 +2,7 @@
 
 import {getSetting, getUserProfile} from "./utils/wxapi";
 import {IAppOption} from "./appoption"
-import {LoginRequest, LoginResponse} from "./service/proto_gen/auth/auth";
-import {CreateTripRequest} from "./service/proto_gen/rental/rental";
+import {CoolCar} from "./service/request";
 
 let resolveUserInfo: (value: (WechatMiniprogram.UserInfo | PromiseLike<WechatMiniprogram.UserInfo>)) => void
 let rejectUserInfo: (reason?: any) => void
@@ -22,37 +21,7 @@ App<IAppOption>({
         wx.setStorageSync('logs', logs)
 
         // 登录
-        wx.login({
-            success: res => {
-                console.log('..................')
-                console.log(res)
-                console.log(res.code)
-                // 发送 res.code 到后台换取 openId, sessionKey, unionId
-                wx.request({
-                    url: 'http://localhost:8080/v1/auth/login',
-                    method: 'POST',
-                    data: {
-                        code: res.code,
-                    } as LoginRequest,
-                    success: result => {
-                        console.log(result)
-                        const res = LoginResponse.fromJson(result.data as string)
-                        console.log(res)
-                        wx.request({
-                            url: 'http://localhost:8080/v1/trip',
-                            method: 'POST',
-                            data: {
-                                start: 'abcd',
-                            } as CreateTripRequest,
-                            header: {
-                                authorization: 'Bearer ' + res.accessToken
-                            }
-                        })
-                    },
-                    fail: console.error,
-                })
-            },
-        })
+        CoolCar.login()
 
         try {
             const setting = await getSetting()

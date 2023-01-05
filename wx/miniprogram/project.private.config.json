@@ -5,7 +5,7 @@
     "compileHotReLoad": true,
     "preloadBackgroundData": false,
     "urlCheck": false,
-    "autoAudits": true
+    "autoAudits": false
   },
   "libVersion": "2.29.0",
   "condition": {
