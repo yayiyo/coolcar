@@ -26,15 +26,16 @@ func NewMongo(db *mongo.Database) *Mongo {
 func (m *Mongo) ResolveAccountID(ctx context.Context, openID string) (string, error) {
 	res := m.col.FindOneAndUpdate(ctx,
 		bson.M{openIDFiled: openID},
-		mgo.Set(bson.M{
-			openIDFiled: openID,
+		mgo.SetOnInsert(bson.M{
+			mgo.IDFieldName: mgo.NewObjID(),
+			openIDFiled:     openID,
 		}), options.FindOneAndUpdate().SetUpsert(true).
 			SetReturnDocument(options.After))
 	if err := res.Err(); err != nil {
 		return "", err
 	}
 
-	var row mgo.ObjID
+	var row mgo.IDField
 	err := res.Decode(&row)
 	if err != nil {
 		return "", err

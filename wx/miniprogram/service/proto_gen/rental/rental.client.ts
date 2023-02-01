@@ -4,8 +4,13 @@
 import type { RpcTransport } from "@protobuf-ts/runtime-rpc";
 import type { ServiceInfo } from "@protobuf-ts/runtime-rpc";
 import { TripService } from "./rental";
+import type { UpdateTripRequest } from "./rental";
+import type { GetTripsResponse } from "./rental";
+import type { GetTripsRequest } from "./rental";
+import type { Trip } from "./rental";
+import type { GetTripRequest } from "./rental";
 import { stackIntercept } from "@protobuf-ts/runtime-rpc";
-import type { CreateTripResponse } from "./rental";
+import type { TripEntity } from "./rental";
 import type { CreateTripRequest } from "./rental";
 import type { UnaryCall } from "@protobuf-ts/runtime-rpc";
 import type { RpcOptions } from "@protobuf-ts/runtime-rpc";
@@ -14,9 +19,21 @@ import type { RpcOptions } from "@protobuf-ts/runtime-rpc";
  */
 export interface ITripServiceClient {
     /**
-     * @generated from protobuf rpc: CreateTrip(rental.v1.CreateTripRequest) returns (rental.v1.CreateTripResponse);
+     * @generated from protobuf rpc: CreateTrip(rental.v1.CreateTripRequest) returns (rental.v1.TripEntity);
      */
-    createTrip(input: CreateTripRequest, options?: RpcOptions): UnaryCall<CreateTripRequest, CreateTripResponse>;
+    createTrip(input: CreateTripRequest, options?: RpcOptions): UnaryCall<CreateTripRequest, TripEntity>;
+    /**
+     * @generated from protobuf rpc: GetTrip(rental.v1.GetTripRequest) returns (rental.v1.Trip);
+     */
+    getTrip(input: GetTripRequest, options?: RpcOptions): UnaryCall<GetTripRequest, Trip>;
+    /**
+     * @generated from protobuf rpc: GetTrips(rental.v1.GetTripsRequest) returns (rental.v1.GetTripsResponse);
+     */
+    getTrips(input: GetTripsRequest, options?: RpcOptions): UnaryCall<GetTripsRequest, GetTripsResponse>;
+    /**
+     * @generated from protobuf rpc: UpdateTrip(rental.v1.UpdateTripRequest) returns (rental.v1.Trip);
+     */
+    updateTrip(input: UpdateTripRequest, options?: RpcOptions): UnaryCall<UpdateTripRequest, Trip>;
 }
 /**
  * @generated from protobuf service rental.v1.TripService
@@ -28,10 +45,31 @@ export class TripServiceClient implements ITripServiceClient, ServiceInfo {
     constructor(private readonly _transport: RpcTransport) {
     }
     /**
-     * @generated from protobuf rpc: CreateTrip(rental.v1.CreateTripRequest) returns (rental.v1.CreateTripResponse);
+     * @generated from protobuf rpc: CreateTrip(rental.v1.CreateTripRequest) returns (rental.v1.TripEntity);
      */
-    createTrip(input: CreateTripRequest, options?: RpcOptions): UnaryCall<CreateTripRequest, CreateTripResponse> {
+    createTrip(input: CreateTripRequest, options?: RpcOptions): UnaryCall<CreateTripRequest, TripEntity> {
         const method = this.methods[0], opt = this._transport.mergeOptions(options);
-        return stackIntercept<CreateTripRequest, CreateTripResponse>("unary", this._transport, method, opt, input);
+        return stackIntercept<CreateTripRequest, TripEntity>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * @generated from protobuf rpc: GetTrip(rental.v1.GetTripRequest) returns (rental.v1.Trip);
+     */
+    getTrip(input: GetTripRequest, options?: RpcOptions): UnaryCall<GetTripRequest, Trip> {
+        const method = this.methods[1], opt = this._transport.mergeOptions(options);
+        return stackIntercept<GetTripRequest, Trip>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * @generated from protobuf rpc: GetTrips(rental.v1.GetTripsRequest) returns (rental.v1.GetTripsResponse);
+     */
+    getTrips(input: GetTripsRequest, options?: RpcOptions): UnaryCall<GetTripsRequest, GetTripsResponse> {
+        const method = this.methods[2], opt = this._transport.mergeOptions(options);
+        return stackIntercept<GetTripsRequest, GetTripsResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * @generated from protobuf rpc: UpdateTrip(rental.v1.UpdateTripRequest) returns (rental.v1.Trip);
+     */
+    updateTrip(input: UpdateTripRequest, options?: RpcOptions): UnaryCall<UpdateTripRequest, Trip> {
+        const method = this.methods[3], opt = this._transport.mergeOptions(options);
+        return stackIntercept<UpdateTripRequest, Trip>("unary", this._transport, method, opt, input);
     }
 }
