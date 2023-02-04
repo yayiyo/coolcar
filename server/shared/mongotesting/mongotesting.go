@@ -10,6 +10,9 @@ import (
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
 	"github.com/docker/go-connections/nat"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 const (
@@ -17,7 +20,9 @@ const (
 	containerPort = "27017/tcp"
 )
 
-func RunMongoInDocker(m *testing.M, mongoURI *string) int {
+var mongoURI string
+
+func RunMongoInDocker(m *testing.M) int {
 	c, err := client.NewClientWithOpts(client.FromEnv)
 	if err != nil {
 		panic(err)
@@ -64,7 +69,43 @@ func RunMongoInDocker(m *testing.M, mongoURI *string) int {
 	}
 
 	fmt.Printf("mongodb container listening on port %s\n", inspect.NetworkSettings.Ports[containerPort][0].HostPort)
-	*mongoURI = fmt.Sprintf("mongodb://%s:%s", inspect.NetworkSettings.Ports[containerPort][0].HostIP,
+	mongoURI = fmt.Sprintf("mongodb://%s:%s", inspect.NetworkSettings.Ports[containerPort][0].HostIP,
 		inspect.NetworkSettings.Ports[containerPort][0].HostPort)
 	return m.Run()
+}
+
+// NewClient creates a new MongoDB client with the given configuration of mongo container.
+func NewClient(ctx context.Context) (*mongo.Client, error) {
+	return mongo.Connect(context.Background(), options.Client().ApplyURI(mongoURI))
+}
+
+// NewDefaultClient creates a new default mongo client with localhost and default port.
+func NewDefaultClient(ctx context.Context) (*mongo.Client, error) {
+	return mongo.Connect(context.Background(), options.Client().ApplyURI("mongodb://localhost:27017"))
+}
+
+// SetupIndexes sets up indexes with given database.
+func SetupIndexes(ctx context.Context, db *mongo.Database) (err error) {
+	_, err = db.Collection("account").Indexes().CreateOne(ctx, mongo.IndexModel{
+		Keys: bson.D{
+			{Key: "open_id", Value: 1},
+		},
+		Options: options.Index().SetUnique(true),
+	})
+
+	if err != nil {
+		return err
+	}
+
+	_, err = db.Collection("trip").Indexes().CreateOne(ctx, mongo.IndexModel{
+		Keys: bson.D{
+			{Key: "trip.accountid", Value: 1},
+			{Key: "trip.status", Value: 1},
+		},
+		Options: options.Index().SetUnique(true).SetPartialFilterExpression(bson.M{"trip.status": 1}),
+	})
+	if err != nil {
+		return err
+	}
+	return nil
 }

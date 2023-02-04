@@ -8,20 +8,14 @@ import (
 	"testing"
 
 	"coolcar/shared/mongotesting"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
-)
-
-var (
-	mongoURI string
 )
 
 func TestMain(m *testing.M) {
-	os.Exit(mongotesting.RunMongoInDocker(m, &mongoURI))
+	os.Exit(mongotesting.RunMongoInDocker(m))
 }
 
 func TestResolveAccountID(t *testing.T) {
-	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(mongoURI))
+	client, err := mongotesting.NewClient(context.Background())
 	if err != nil {
 		log.Fatal(err)
 	}
