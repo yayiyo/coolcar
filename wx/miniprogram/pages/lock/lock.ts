@@ -2,14 +2,16 @@ import {routing} from "../../utils/routing"
 import {TripService} from "../../service/trip";
 
 Page({
+    carId: '',
     data: {
         avatarUrl: '',
     },
 
     onLoad(opt: Record<'car_id', string>) {
         const o: routing.LockOpts = opt
+        this.carId = o.car_id
         console.log(o)
-        console.log('unloack car', o.car_id)
+        console.log('unlock car', o.car_id)
         const avatarUrl = wx.getStorageSync('avatar')
         this.setData({
             avatarUrl,
@@ -25,7 +27,7 @@ Page({
     },
     onUnlockTap() {
         wx.getLocation({
-            success: loc => {
+            success: async loc => {
                 console.log('startting a trip', {
                     location: {
                         latitude: loc.latitude,
@@ -34,12 +36,23 @@ Page({
                     avatarURL: this.data.avatarUrl,
                 })
 
-                TripService.createTrip({
-                    start: 'abcd',
-                })
-                return
+                if (!this.carId) {
+                    console.error('car_id is required')
+                    return
+                }
 
-                const tripID = '2324'
+                const trip = await TripService.createTrip({
+                    start: {
+                        latitude: loc.latitude,
+                        longitude: loc.longitude,
+                    },
+                    carId: this.carId,
+                })
+
+                if (!trip.id) {
+                    console.error('trip_id is required')
+                    return
+                }
 
                 wx.showLoading({
                     title: '开锁中',
@@ -48,7 +61,7 @@ Page({
                 setTimeout(function () {
                     wx.redirectTo({
                         url: routing.driving({
-                            trip_id: tripID,
+                            trip_id: trip.id,
                         }),
                     })
                 }, 3000)

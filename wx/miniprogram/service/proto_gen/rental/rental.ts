@@ -45,6 +45,10 @@ export interface LocationStatus {
      * @generated from protobuf field: string poi_name = 4;
      */
     poiName: string;
+    /**
+     * @generated from protobuf field: int64 timestamp_sec = 5;
+     */
+    timestampSec: bigint;
 }
 /**
  * @generated from protobuf message rental.v1.TripEntity
@@ -87,6 +91,10 @@ export interface Trip {
      * @generated from protobuf field: rental.v1.TripStatus status = 6;
      */
     status: TripStatus;
+    /**
+     * @generated from protobuf field: string identity_id = 7;
+     */
+    identityId: string;
 }
 /**
  * @generated from protobuf message rental.v1.CreateTripRequest
@@ -223,11 +231,12 @@ class LocationStatus$Type extends MessageType<LocationStatus> {
             { no: 1, name: "location", kind: "message", T: () => Location },
             { no: 2, name: "fee_cent", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 3, name: "km_driven", kind: "scalar", T: 1 /*ScalarType.DOUBLE*/ },
-            { no: 4, name: "poi_name", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+            { no: 4, name: "poi_name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 5, name: "timestamp_sec", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ }
         ]);
     }
     create(value?: PartialMessage<LocationStatus>): LocationStatus {
-        const message = { feeCent: 0, kmDriven: 0, poiName: "" };
+        const message = { feeCent: 0, kmDriven: 0, poiName: "", timestampSec: 0n };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<LocationStatus>(this, message, value);
@@ -249,6 +258,9 @@ class LocationStatus$Type extends MessageType<LocationStatus> {
                     break;
                 case /* string poi_name */ 4:
                     message.poiName = reader.string();
+                    break;
+                case /* int64 timestamp_sec */ 5:
+                    message.timestampSec = reader.int64().toBigInt();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -274,6 +286,9 @@ class LocationStatus$Type extends MessageType<LocationStatus> {
         /* string poi_name = 4; */
         if (message.poiName !== "")
             writer.tag(4, WireType.LengthDelimited).string(message.poiName);
+        /* int64 timestamp_sec = 5; */
+        if (message.timestampSec !== 0n)
+            writer.tag(5, WireType.Varint).int64(message.timestampSec);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -347,11 +362,12 @@ class Trip$Type extends MessageType<Trip> {
             { no: 3, name: "start", kind: "message", T: () => LocationStatus },
             { no: 4, name: "current", kind: "message", T: () => LocationStatus },
             { no: 5, name: "end", kind: "message", T: () => LocationStatus },
-            { no: 6, name: "status", kind: "enum", T: () => ["rental.v1.TripStatus", TripStatus] }
+            { no: 6, name: "status", kind: "enum", T: () => ["rental.v1.TripStatus", TripStatus] },
+            { no: 7, name: "identity_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<Trip>): Trip {
-        const message = { accountId: "", carId: "", status: 0 };
+        const message = { accountId: "", carId: "", status: 0, identityId: "" };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<Trip>(this, message, value);
@@ -379,6 +395,9 @@ class Trip$Type extends MessageType<Trip> {
                     break;
                 case /* rental.v1.TripStatus status */ 6:
                     message.status = reader.int32();
+                    break;
+                case /* string identity_id */ 7:
+                    message.identityId = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -410,6 +429,9 @@ class Trip$Type extends MessageType<Trip> {
         /* rental.v1.TripStatus status = 6; */
         if (message.status !== 0)
             writer.tag(6, WireType.Varint).int32(message.status);
+        /* string identity_id = 7; */
+        if (message.identityId !== "")
+            writer.tag(7, WireType.LengthDelimited).string(message.identityId);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

@@ -150,3 +150,7 @@ func TestGetTrip(t *testing.T) {
 		t.Errorf("results is different: %s", diff)
 	}
 }
+
+func TestGetTrips(t *testing.T) {
+
+}

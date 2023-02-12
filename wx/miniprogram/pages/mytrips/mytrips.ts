@@ -1,4 +1,5 @@
 import { routing } from "../../utils/routing"
+import {TripService} from "../../service/trip";
 
 interface Trip {
   id: string
@@ -66,6 +67,7 @@ Page({
   },
 
   onLoad() {
+    const trips = TripService.getTrips()
     this.populateTrips()
     const avatarURL = wx.getStorageSync('avatar')
     this.setData({

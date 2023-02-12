@@ -12,7 +12,7 @@ export namespace CoolCar {
     export interface RequestOption<REQ, RES> {
         method: 'GET' | 'POST' | 'PUT' | 'DELETE',
         path: string,
-        data: REQ,
+        data?: REQ,
         resMarshal: (json: string) => RES,
     }
 

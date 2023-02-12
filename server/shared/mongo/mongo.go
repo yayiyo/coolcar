@@ -8,7 +8,8 @@ import (
 )
 
 const (
-	IDFieldName = "_id"
+	IDFieldName       = "_id"
+	UpdateAtFieldName = "update_at"
 )
 
 // defines the object id
