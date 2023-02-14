@@ -22,16 +22,16 @@
 				<view class="title">驾驶证号</view>
 				<input
 				 placeholder="驾驶证号"
-				 value="{{licNo}}"
-				 disabled="{{state!=='UNSUBMIITED'}}"
+				 model:value="{{licNo}}"
+				 disabled="{{state!=='NOT_SUBMITTED'}}"
 				/>
 			</view>
 			<view class="cu-form-group">
 				<view class="title">姓名</view>
 				<input
 				 placeholder="姓名"
-				 value="{{name}}"
-				 disabled="{{state!=='UNSUBMIITED'}}"
+				 model:value="{{name}}"
+				 disabled="{{state!=='NOT_SUBMITTED'}}"
 				/>
 			</view>
 			<view class="cu-form-group">
@@ -40,7 +40,7 @@
 				 bindchange="onGenderChange"
 				 value="{{genderIndex}}"
 				 range="{{genders}}"
-				 disabled="{{state!=='UNSUBMIITED'}}"
+				 disabled="{{state!=='NOT_SUBMITTED'}}"
 				>
 					<view class="picker">{{genders[genderIndex]}}</view>
 				</picker>
@@ -51,7 +51,7 @@
 				 mode="date"
 				 value="{{birthDate}}"
 				 bindchange="onBirthDateChange"
-				 disabled="{{state!=='UNSUBMIITED'}}"
+				 disabled="{{state!=='NOT_SUBMITTED'}}"
 				>
 					<view class="picker">{{birthDate}}</view>
 				</picker>
@@ -59,14 +59,14 @@
 		</view>
 		<button
 		 class="cu-btn bg-red lg  margin-top-xl"
-		 wx:if="{{state==='UNSUBMIITED'}}"
+		 wx:if="{{state==='NOT_SUBMITTED'}}"
 		 bindtap="onSubmit"
 		>
 			递交审查
 		</button>
 		<button
 		 class="cu-btn block line-blue margin-top-xl lg"
-		 wx:if="{{state==='PEDING'}}"
+		 wx:if="{{state==='PENDING'}}"
 		 disabled
 		>
 			审查中

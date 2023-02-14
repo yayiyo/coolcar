@@ -1,10 +1,12 @@
-<map id="map" latitude="{{location.latitude}}" longitude="{{location.longitude}}" scale="{{scale}}" setting="{{setting}}" enable-overlooking="{{isOverLooking}}" enable-3D="{{is3D}}" markers="{{markers}}">
-				<view class="icon-container">
-								<image class="round" src="{{avatarURL?avatarURL:'/resources/account.png'}}" bindtap="onMyTripsTap" />
-								<image bindtap="onMyLocationTap" src="/resources/my_location.png" />
-				</view>
-				<view class="btn-container bg-grey round" bindtap="onScanTap">
-								<view>扫码租车</view>
-				</view>
+<map id="map" latitude="{{location.latitude}}" longitude="{{location.longitude}}" scale="{{scale}}"
+     setting="{{setting}}" enable-overlooking="{{isOverLooking}}" enable-3D="{{is3D}}" markers="{{markers}}">
+    <view class="icon-container">
+        <image class="round" src="{{avatarURL?avatarURL:'/resources/account.png'}}" bindtap="onMyTripsTap"/>
+        <image bindtap="onMyLocationTap" src="/resources/my_location.png"/>
+    </view>
+    <view class="btn-container bg-grey round" bindtap="onScanTap">
+        <view>扫码租车</view>
+    </view>
 </map>
 <modal id="licModal" showCancel title="身份认证" content="需要身份认证才可以使用"></modal>
+<modal id="tripModal" title="行程中" content="当前有进行中的行程，将跳转到行程页面"></modal>

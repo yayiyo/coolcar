@@ -89,14 +89,12 @@ export namespace CoolCar {
                     } else if (res.statusCode >= 400) {
                         reject(res)
                     } else {
-                        console.log(res.data)
                         const toCamelObj = camelcaseKeys(
                             res.data as object,
                             {
                                 deep: true
                             })
                         const obj = JSON.parse(JSON.stringify(toCamelObj)) as RES
-                        console.log(obj)
                         resolve(obj)
                     }
 

@@ -107,5 +107,16 @@ func SetupIndexes(ctx context.Context, db *mongo.Database) (err error) {
 	if err != nil {
 		return err
 	}
+
+	_, err = db.Collection("profile").Indexes().CreateOne(ctx, mongo.IndexModel{
+		Keys: bson.D{
+			{Key: "account_id", Value: 1},
+		},
+		Options: options.Index().SetUnique(true),
+	})
+	if err != nil {
+		return err
+	}
+
 	return nil
 }

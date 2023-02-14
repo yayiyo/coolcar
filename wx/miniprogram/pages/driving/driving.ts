@@ -1,13 +1,11 @@
 import {routing} from "../../utils/routing"
 import {TripService} from "../../service/trip";
+import {parseString} from "../../utils/format";
 
 // 每秒一分钱
 const centPerSec = 0.8
 
 function formatTime(second: number) {
-    const parseString = (n: number) => {
-        return n < 10 ? '0' + n.toFixed(0) : n.toFixed(0)
-    }
     const h = Math.floor(second / 3600)
     second -= h * 3600
     const m = Math.floor(second / 60)
@@ -35,7 +33,6 @@ Page({
     onLoad(opt: Record<'trip_id', string>) {
         const o: routing.DriveOpts = opt
         console.log('current trip', o.trip_id)
-        o.trip_id = '63e878cb53696f1811ab91d4'
         TripService.getTrip(o.trip_id).then(console.log)
         this.setupLocationUpdator()
         this.setupTimer()

@@ -154,6 +154,50 @@ export interface UpdateTripRequest {
     endTrip: boolean;
 }
 /**
+ * @generated from protobuf message rental.v1.Profile
+ */
+export interface Profile {
+    /**
+     * @generated from protobuf field: rental.v1.Identity identity = 1;
+     */
+    identity?: Identity;
+    /**
+     * @generated from protobuf field: rental.v1.IdentityStatus identity_status = 2;
+     */
+    identityStatus: IdentityStatus;
+}
+/**
+ * @generated from protobuf message rental.v1.Identity
+ */
+export interface Identity {
+    /**
+     * @generated from protobuf field: string lic_number = 1;
+     */
+    licNumber: string;
+    /**
+     * @generated from protobuf field: string name = 2;
+     */
+    name: string;
+    /**
+     * @generated from protobuf field: rental.v1.Gender gender = 3;
+     */
+    gender: Gender;
+    /**
+     * @generated from protobuf field: string birth_date = 4;
+     */
+    birthDate: string;
+}
+/**
+ * @generated from protobuf message rental.v1.GetProfileRequest
+ */
+export interface GetProfileRequest {
+}
+/**
+ * @generated from protobuf message rental.v1.ClearProfileRequest
+ */
+export interface ClearProfileRequest {
+}
+/**
  * @generated from protobuf enum rental.v1.TripStatus
  */
 export enum TripStatus {
@@ -169,6 +213,40 @@ export enum TripStatus {
      * @generated from protobuf enum value: FINISHED = 2;
      */
     FINISHED = 2
+}
+/**
+ * @generated from protobuf enum rental.v1.Gender
+ */
+export enum Gender {
+    /**
+     * @generated from protobuf enum value: G_NOT_SPECIFIED = 0;
+     */
+    G_NOT_SPECIFIED = 0,
+    /**
+     * @generated from protobuf enum value: MALE = 1;
+     */
+    MALE = 1,
+    /**
+     * @generated from protobuf enum value: FEMALE = 2;
+     */
+    FEMALE = 2
+}
+/**
+ * @generated from protobuf enum rental.v1.IdentityStatus
+ */
+export enum IdentityStatus {
+    /**
+     * @generated from protobuf enum value: NOT_SUBMITTED = 0;
+     */
+    NOT_SUBMITTED = 0,
+    /**
+     * @generated from protobuf enum value: PENDING = 1;
+     */
+    PENDING = 1,
+    /**
+     * @generated from protobuf enum value: VERIFIED = 2;
+     */
+    VERIFIED = 2
 }
 // @generated message type with reflection information, may provide speed optimized methods
 class Location$Type extends MessageType<Location> {
@@ -698,6 +776,180 @@ class UpdateTripRequest$Type extends MessageType<UpdateTripRequest> {
  * @generated MessageType for protobuf message rental.v1.UpdateTripRequest
  */
 export const UpdateTripRequest = new UpdateTripRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Profile$Type extends MessageType<Profile> {
+    constructor() {
+        super("rental.v1.Profile", [
+            { no: 1, name: "identity", kind: "message", T: () => Identity },
+            { no: 2, name: "identity_status", kind: "enum", T: () => ["rental.v1.IdentityStatus", IdentityStatus] }
+        ]);
+    }
+    create(value?: PartialMessage<Profile>): Profile {
+        const message = { identityStatus: 0 };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<Profile>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Profile): Profile {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* rental.v1.Identity identity */ 1:
+                    message.identity = Identity.internalBinaryRead(reader, reader.uint32(), options, message.identity);
+                    break;
+                case /* rental.v1.IdentityStatus identity_status */ 2:
+                    message.identityStatus = reader.int32();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Profile, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* rental.v1.Identity identity = 1; */
+        if (message.identity)
+            Identity.internalBinaryWrite(message.identity, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        /* rental.v1.IdentityStatus identity_status = 2; */
+        if (message.identityStatus !== 0)
+            writer.tag(2, WireType.Varint).int32(message.identityStatus);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message rental.v1.Profile
+ */
+export const Profile = new Profile$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Identity$Type extends MessageType<Identity> {
+    constructor() {
+        super("rental.v1.Identity", [
+            { no: 1, name: "lic_number", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "gender", kind: "enum", T: () => ["rental.v1.Gender", Gender] },
+            { no: 4, name: "birth_date", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Identity>): Identity {
+        const message = { licNumber: "", name: "", gender: 0, birthDate: "" };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<Identity>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Identity): Identity {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string lic_number */ 1:
+                    message.licNumber = reader.string();
+                    break;
+                case /* string name */ 2:
+                    message.name = reader.string();
+                    break;
+                case /* rental.v1.Gender gender */ 3:
+                    message.gender = reader.int32();
+                    break;
+                case /* string birth_date */ 4:
+                    message.birthDate = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Identity, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string lic_number = 1; */
+        if (message.licNumber !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.licNumber);
+        /* string name = 2; */
+        if (message.name !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.name);
+        /* rental.v1.Gender gender = 3; */
+        if (message.gender !== 0)
+            writer.tag(3, WireType.Varint).int32(message.gender);
+        /* string birth_date = 4; */
+        if (message.birthDate !== "")
+            writer.tag(4, WireType.LengthDelimited).string(message.birthDate);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message rental.v1.Identity
+ */
+export const Identity = new Identity$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class GetProfileRequest$Type extends MessageType<GetProfileRequest> {
+    constructor() {
+        super("rental.v1.GetProfileRequest", []);
+    }
+    create(value?: PartialMessage<GetProfileRequest>): GetProfileRequest {
+        const message = {};
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<GetProfileRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: GetProfileRequest): GetProfileRequest {
+        return target ?? this.create();
+    }
+    internalBinaryWrite(message: GetProfileRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message rental.v1.GetProfileRequest
+ */
+export const GetProfileRequest = new GetProfileRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class ClearProfileRequest$Type extends MessageType<ClearProfileRequest> {
+    constructor() {
+        super("rental.v1.ClearProfileRequest", []);
+    }
+    create(value?: PartialMessage<ClearProfileRequest>): ClearProfileRequest {
+        const message = {};
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<ClearProfileRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ClearProfileRequest): ClearProfileRequest {
+        return target ?? this.create();
+    }
+    internalBinaryWrite(message: ClearProfileRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message rental.v1.ClearProfileRequest
+ */
+export const ClearProfileRequest = new ClearProfileRequest$Type();
 /**
  * @generated ServiceType for protobuf service rental.v1.TripService
  */
@@ -706,4 +958,12 @@ export const TripService = new ServiceType("rental.v1.TripService", [
     { name: "GetTrip", options: {}, I: GetTripRequest, O: Trip },
     { name: "GetTrips", options: {}, I: GetTripsRequest, O: GetTripsResponse },
     { name: "UpdateTrip", options: {}, I: UpdateTripRequest, O: Trip }
+]);
+/**
+ * @generated ServiceType for protobuf service rental.v1.ProfileService
+ */
+export const ProfileService = new ServiceType("rental.v1.ProfileService", [
+    { name: "GetProfile", options: {}, I: GetProfileRequest, O: Profile },
+    { name: "SubmitProfile", options: {}, I: Identity, O: Profile },
+    { name: "ClearProfile", options: {}, I: ClearProfileRequest, O: Profile }
 ]);

@@ -3,6 +3,9 @@
 
 import {IAppOption} from "../../appoption"
 import {routing} from "../../utils/routing"
+import {TripService} from "../../service/trip";
+import {IdentityStatus, TripStatus} from "../../service/proto_gen/rental/rental";
+import {ProfileService} from "../../service/profile";
 
 const app = getApp<IAppOption>()
 
@@ -74,21 +77,44 @@ Page({
             }
         })
     },
-    onScanTap() {
+    async onScanTap() {
+        const trips = await TripService.getTrips(TripStatus.IN_PROGRESS)
+        if (trips.trips?.length || 0 > 0) {
+            await this.selectComponent('#tripModal').showModal().then((res: 'ok' | 'cancel' | 'close') => {
+                console.log(res)
+                if (res === 'ok') {
+                    wx.navigateTo({
+                        url: routing.driving({
+                            trip_id: trips.trips[0].id
+                        })
+                    })
+                }
+            })
+            return
+        }
+
         wx.scanCode({
             success: async () => {
-                await this.selectComponent('#licModal').showModal().then((res: 'ok' | 'cancel' | 'close') => {
-                    console.log(res)
-                    if (res === 'ok') {
-                        const car_id = '88888'
-                        const redirectURL = routing.lock({car_id})
-                        wx.navigateTo({
-                            url: routing.register({
-                                redirectURL,
-                            }),
-                        })
-                    }
-                })
+                const car_id = 'BJ888'
+                const lockUrl = routing.lock({car_id})
+                const profile = await ProfileService.getProfile()
+                if (profile.identityStatus === IdentityStatus.VERIFIED) {
+                    wx.navigateTo({
+                        url: lockUrl,
+                    })
+                } else {
+                    await this.selectComponent('#licModal').showModal().then((res: 'ok' | 'cancel' | 'close') => {
+                        console.log(res)
+                        if (res === 'ok') {
+                            wx.navigateTo({
+                                url: routing.register({
+                                    redirectURL: lockUrl,
+                                }),
+                            })
+                        }
+                    })
+
+                }
             },
             fail: console.error,
         })
@@ -99,6 +125,10 @@ Page({
 
     onShow() {
         this.isPageShowing = true
+        const avatarURL = wx.getStorageSync('avatar')
+        this.setData({
+            avatarURL,
+        })
     },
     moveCars() {
         const map = wx.createMapContext("map")
