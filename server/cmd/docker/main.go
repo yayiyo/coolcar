@@ -19,7 +19,7 @@ func main() {
 	}
 
 	container, err := c.ContainerCreate(context.Background(), &container.Config{
-		Image: "mongo:4.4",
+		Image: "dao:4.4",
 		ExposedPorts: map[nat.Port]struct{}{
 			"27017/tcp": {},
 		},

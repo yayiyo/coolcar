@@ -1,6 +1,6 @@
 import {routing} from "../../utils/routing"
 import {ProfileService} from "../../service/profile";
-import {Gender, IdentityStatus, Profile} from "../../service/proto_gen/rental/rental";
+import {IdentityStatus, Profile} from "../../service/proto_gen/rental/rental";
 import {parseString} from "../../utils/format";
 
 
@@ -58,6 +58,15 @@ Page({
                 if (res.tempFiles.length > 0) {
                     this.setData({
                         licImgURL: res.tempFiles[0].tempFilePath
+                    })
+
+                    const d = wx.getFileSystemManager().readFileSync(res.tempFiles[0].tempFilePath)
+                    wx.request({
+                        url: 'https://coolcar-1255667223.cos.ap-beijing.myqcloud.com/account-1/63ef3143edd8b65e78b7c23c?q-sign-algorithm=sha1&q-ak=AKIDwqiU9g5LRRM6h9jDVbT8e0AGKFxQhrpo&q-sign-time=1676620099%3B1676621099&q-key-time=1676620099%3B1676621099&q-header-list=host&q-url-param-list=&q-signature=0f4f88aa22ecb15f517f68f7ff3433ec5c3c3159',
+                        method: "PUT",
+                        data: d,
+                        success: console.log,
+                        fail: console.error,
                     })
                     // TODO: check the licence and set the info
                     setTimeout(() => {

@@ -1,17 +1,18 @@
 PROTO_PATH=./auth/api
 GO_OUT_PATH=./auth/api/gen/v1
 PROTO_FILE=auth
+SKIP_GATEWAY=$4
 
 if [ $1 ]; then
-    PROTO_PATH=$1
+  PROTO_PATH=$1
 fi
 
 if [ $2 ]; then
-    GO_OUT_PATH=$2
+  GO_OUT_PATH=$2
 fi
 
 if [ $3 ]; then
-    PROTO_FILE=$3
+  PROTO_FILE=$3
 fi
 
 mkdir -p $GO_OUT_PATH
@@ -22,6 +23,10 @@ protoc -I $PROTO_PATH --go_out $GO_OUT_PATH \
   --go-grpc_out $GO_OUT_PATH \
   --go-grpc_opt paths=source_relative \
   $PROTO_FILE.proto
+
+if [ $SKIP_GATEWAY ]; then
+  exit 0
+fi
 
 ## proto.pb.gw.go
 #protoc -I .  --grpc-gateway_out ./gen/go \

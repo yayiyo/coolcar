@@ -29,7 +29,7 @@ var UpdatedAt = func() int64 {
 	return time.Now().UnixNano()
 }
 
-// Set returns a mongo $set document.
+// Set returns a dao $set document.
 func Set(v interface{}) bson.M {
 	return bson.M{
 		"$set": v,

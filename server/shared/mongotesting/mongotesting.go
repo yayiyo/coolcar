@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	imageName     = "mongo:4.4"
+	imageName     = "dao:4.4"
 	containerPort = "27017/tcp"
 )
 
@@ -74,12 +74,12 @@ func RunMongoInDocker(m *testing.M) int {
 	return m.Run()
 }
 
-// NewClient creates a new MongoDB client with the given configuration of mongo container.
+// NewClient creates a new MongoDB client with the given configuration of dao container.
 func NewClient(ctx context.Context) (*mongo.Client, error) {
 	return mongo.Connect(context.Background(), options.Client().ApplyURI(mongoURI))
 }
 
-// NewDefaultClient creates a new default mongo client with localhost and default port.
+// NewDefaultClient creates a new default dao client with localhost and default port.
 func NewDefaultClient(ctx context.Context) (*mongo.Client, error) {
 	return mongo.Connect(context.Background(), options.Client().ApplyURI("mongodb://localhost:27017"))
 }
