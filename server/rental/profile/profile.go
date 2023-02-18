@@ -4,9 +4,11 @@ import (
 	"context"
 	"time"
 
+	blobpb "coolcar/blob/api/gen/v1"
 	rentalpb "coolcar/rental/api/gen/v1"
 	"coolcar/rental/profile/dao"
 	"coolcar/shared/auth"
+	"coolcar/shared/id"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
@@ -15,8 +17,11 @@ import (
 
 type Service struct {
 	rentalpb.UnimplementedProfileServiceServer
-	Mongo  *dao.Mongo
-	Logger *zap.Logger
+	BlobService       blobpb.BlobServiceClient
+	PhotoGetExpire    time.Duration
+	PhotoUploadExpire time.Duration
+	Mongo             *dao.Mongo
+	Logger            *zap.Logger
 }
 
 func (s *Service) GetProfile(ctx context.Context, req *rentalpb.GetProfileRequest) (*rentalpb.Profile, error) {
@@ -29,13 +34,17 @@ func (s *Service) GetProfile(ctx context.Context, req *rentalpb.GetProfileReques
 
 	p, err := s.Mongo.GetProfile(ctx, aid)
 	if err != nil {
-		if err == mongo.ErrNoDocuments {
+		code := s.logAndConvertProfileErr(err)
+		if code == codes.NotFound {
 			return &rentalpb.Profile{}, nil
 		}
-		s.Logger.Error("can't get profile", zap.Error(err))
-		return nil, status.Error(codes.Internal, "")
+		return nil, status.Error(code, "")
 	}
-	return p, nil
+
+	if p.Profile == nil {
+		return &rentalpb.Profile{}, nil
+	}
+	return p.Profile, nil
 }
 
 func (s *Service) SubmitProfile(ctx context.Context, i *rentalpb.Identity) (*rentalpb.Profile, error) {
@@ -49,7 +58,7 @@ func (s *Service) SubmitProfile(ctx context.Context, i *rentalpb.Identity) (*ren
 		IdentityStatus: rentalpb.IdentityStatus_PENDING,
 	}
 
-	err = s.Mongo.UpdateProfile(ctx, aid, rentalpb.IdentityStatus_PENDING, p)
+	err = s.Mongo.UpdateProfile(ctx, aid, rentalpb.IdentityStatus_NOT_SUBMITTED, p)
 	if err != nil {
 		s.Logger.Error("can't update profile", zap.Error(err))
 		return nil, status.Error(codes.Internal, "")
@@ -83,4 +92,112 @@ func (s *Service) ClearProfile(ctx context.Context, req *rentalpb.ClearProfileRe
 	}
 
 	return p, nil
+}
+
+func (s *Service) GetProfilePhoto(ctx context.Context, req *rentalpb.GetProfilePhotoRequest) (*rentalpb.GetProfilePhotoResponse, error) {
+	aid, err := auth.AccountIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	p, err := s.Mongo.GetProfile(ctx, aid)
+	if err != nil {
+		return nil, status.Error(s.logAndConvertProfileErr(err), "")
+	}
+
+	if p.PhotoBlobID == "" {
+		return nil, status.Error(codes.NotFound, "")
+	}
+
+	br, err := s.BlobService.GetBlobURL(ctx, &blobpb.GetBlobURLRequest{
+		Id:         p.PhotoBlobID,
+		TimeoutSec: int32(s.PhotoGetExpire.Seconds()),
+	})
+	if err != nil {
+		s.Logger.Error("get blob url error", zap.Error(err))
+		return nil, status.Error(codes.Internal, "")
+	}
+	return &rentalpb.GetProfilePhotoResponse{
+		Url: br.Url,
+	}, nil
+}
+func (s *Service) CreateProfilePhoto(ctx context.Context, req *rentalpb.CreateProfilePhotoRequest) (*rentalpb.CreateProfilePhotoResponse, error) {
+	aid, err := auth.AccountIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	br, err := s.BlobService.CreateBlob(ctx, &blobpb.CreateBlobRequest{
+		AccountId:           aid.String(),
+		UploadUrlTimeoutSec: int32(s.PhotoUploadExpire.Seconds()),
+	})
+	if err != nil {
+		s.Logger.Error("create blob error", zap.Error(err))
+		return nil, status.Error(codes.Aborted, "")
+	}
+
+	err = s.Mongo.UpdateProfilePhoto(ctx, aid, id.BlobID(br.Id))
+	if err != nil {
+		s.Logger.Error("update profile photo error", zap.Error(err))
+		return nil, status.Error(codes.Aborted, "")
+	}
+
+	return &rentalpb.CreateProfilePhotoResponse{
+		UploadUrl: br.UploadUrl,
+	}, nil
+}
+func (s *Service) CompleteProfilePhoto(ctx context.Context, req *rentalpb.CompleteProfilePhotoRequest) (*rentalpb.Identity, error) {
+	aid, err := auth.AccountIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	p, err := s.Mongo.GetProfile(ctx, aid)
+	if err != nil {
+		return nil, status.Error(s.logAndConvertProfileErr(err), "")
+	}
+
+	if p.PhotoBlobID == "" {
+		return nil, status.Error(codes.NotFound, "")
+	}
+
+	blob, err := s.BlobService.GetBlob(ctx, &blobpb.GetBlobRequest{
+		Id: p.PhotoBlobID,
+	})
+	if err != nil {
+		s.Logger.Error("failed to get profile blob", zap.Error(err))
+		return nil, status.Error(codes.Aborted, "")
+	}
+
+	// TODO：OCR
+	s.Logger.Info("profile photo blob", zap.Int("size", len(blob.Data)))
+
+	return &rentalpb.Identity{
+		LicNumber: "88888888888888",
+		Name:      "李菜鸡",
+		Gender:    rentalpb.Gender_MALE,
+		BirthDate: "1998-02-03",
+	}, nil
+}
+
+func (s *Service) ClearProfilePhoto(ctx context.Context, req *rentalpb.ClearProfilePhotoRequest) (*rentalpb.ClearProfilePhotoResponse, error) {
+	aid, err := auth.AccountIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	err = s.Mongo.UpdateProfilePhoto(ctx, aid, "")
+	if err != nil {
+		s.Logger.Error("failed to clear profile photo", zap.Error(err))
+		return nil, status.Error(codes.Internal, "")
+	}
+	return &rentalpb.ClearProfilePhotoResponse{}, nil
+}
+
+func (s *Service) logAndConvertProfileErr(err error) codes.Code {
+	if err == mongo.ErrNoDocuments {
+		return codes.NotFound
+	}
+	s.Logger.Error("can't get profile", zap.Error(err))
+	return codes.Internal
 }

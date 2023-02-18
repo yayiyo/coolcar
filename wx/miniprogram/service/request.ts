@@ -118,4 +118,28 @@ export namespace CoolCar {
             })
         })
     }
+
+    export interface UploadFileOpts {
+        localPath: string
+        url: string
+    }
+
+    export function uploadFile(o: UploadFileOpts): Promise<void> {
+        const d = wx.getFileSystemManager().readFileSync(o.localPath)
+        return new Promise((resolve, reject) => {
+            wx.request({
+                url: o.url,
+                method: "PUT",
+                data: d,
+                success: res => {
+                    if (res.statusCode > 400) {
+                        reject(res)
+                    } else {
+                        resolve()
+                    }
+                },
+                fail: reject,
+            })
+        })
+    }
 }

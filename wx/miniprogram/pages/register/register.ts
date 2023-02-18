@@ -1,7 +1,8 @@
 import {routing} from "../../utils/routing"
 import {ProfileService} from "../../service/profile";
-import {IdentityStatus, Profile} from "../../service/proto_gen/rental/rental";
+import {Identity, IdentityStatus, Profile} from "../../service/proto_gen/rental/rental";
 import {parseString} from "../../utils/format";
+import {CoolCar} from "../../service/request";
 
 
 function formatDate(dt: Date) {
@@ -29,12 +30,18 @@ Page({
     },
 
     renderProfile(p: Profile) {
+        this.renderIdentity(p.identity!)
         this.setData({
-            licNo: p.identity?.licNumber || '',
-            name: p.identity?.name || '',
-            genderIndex: p.identity?.gender || 0,
-            birthDate: p.identity?.birthDate || formatDate(new Date()),
             state: IdentityStatus[p.identityStatus || 0],
+        })
+    },
+
+    renderIdentity(i: Identity) {
+        this.setData({
+            licNo: i?.licNumber || '',
+            name: i?.name || '',
+            genderIndex: i?.gender || 0,
+            birthDate: i?.birthDate || formatDate(new Date()),
         })
     },
 
@@ -44,6 +51,11 @@ Page({
             this.redirectURL = decodeURIComponent(o.redirect)
         }
         ProfileService.getProfile().then(this.renderProfile)
+        ProfileService.getProfilePhoto().then(p => {
+            this.setData({
+                licImgURL: p.url || '',
+            })
+        })
     },
 
     onUnload() {
@@ -53,31 +65,26 @@ Page({
     onUploadLic() {
         wx.chooseMedia({
             mediaType: ['image'],
-            success: res => {
+            success: async res => {
                 console.log(res)
-                if (res.tempFiles.length > 0) {
-                    this.setData({
-                        licImgURL: res.tempFiles[0].tempFilePath
-                    })
-
-                    const d = wx.getFileSystemManager().readFileSync(res.tempFiles[0].tempFilePath)
-                    wx.request({
-                        url: 'https://coolcar-1255667223.cos.ap-beijing.myqcloud.com/account-1/63ef3143edd8b65e78b7c23c?q-sign-algorithm=sha1&q-ak=AKIDwqiU9g5LRRM6h9jDVbT8e0AGKFxQhrpo&q-sign-time=1676620099%3B1676621099&q-key-time=1676620099%3B1676621099&q-header-list=host&q-url-param-list=&q-signature=0f4f88aa22ecb15f517f68f7ff3433ec5c3c3159',
-                        method: "PUT",
-                        data: d,
-                        success: console.log,
-                        fail: console.error,
-                    })
-                    // TODO: check the licence and set the info
-                    setTimeout(() => {
-                        this.setData({
-                            licNo: '29852539042895',
-                            name: '李大锤',
-                            genderIndex: 1,
-                            birthDate: '2008-08-08'
-                        })
-                    }, 1000);
+                if (res.tempFiles.length === 0) {
+                    return
                 }
+                this.setData({
+                    licImgURL: res.tempFiles[0].tempFilePath
+                })
+
+                const photoRes = await ProfileService.createProfilePhoto()
+                if (!photoRes.uploadUrl) {
+                    return
+                }
+                await CoolCar.uploadFile({
+                    localPath: res.tempFiles[0].tempFilePath,
+                    url: photoRes.uploadUrl,
+                })
+
+                const identity = await ProfileService.completeProfilePhoto()
+                this.renderIdentity(identity)
             }
         })
     },
@@ -129,6 +136,11 @@ Page({
 
     onResubmit() {
         ProfileService.clearProfile().then(this.renderProfile)
+        ProfileService.clearProfilePhoto().then(() => {
+            this.setData({
+                licImgURL: '',
+            })
+        })
     },
 
     onLicVerify() {

@@ -2,6 +2,13 @@
 // @generated from protobuf file "rental.proto" (package "rental.v1", syntax proto3)
 // tslint:disable
 import { ProfileService } from "./rental";
+import type { ClearProfilePhotoResponse } from "./rental";
+import type { ClearProfilePhotoRequest } from "./rental";
+import type { CompleteProfilePhotoRequest } from "./rental";
+import type { CreateProfilePhotoResponse } from "./rental";
+import type { CreateProfilePhotoRequest } from "./rental";
+import type { GetProfilePhotoResponse } from "./rental";
+import type { GetProfilePhotoRequest } from "./rental";
 import type { ClearProfileRequest } from "./rental";
 import type { Identity } from "./rental";
 import type { Profile } from "./rental";
@@ -94,6 +101,22 @@ export interface IProfileServiceClient {
      * @generated from protobuf rpc: ClearProfile(rental.v1.ClearProfileRequest) returns (rental.v1.Profile);
      */
     clearProfile(input: ClearProfileRequest, options?: RpcOptions): UnaryCall<ClearProfileRequest, Profile>;
+    /**
+     * @generated from protobuf rpc: GetProfilePhoto(rental.v1.GetProfilePhotoRequest) returns (rental.v1.GetProfilePhotoResponse);
+     */
+    getProfilePhoto(input: GetProfilePhotoRequest, options?: RpcOptions): UnaryCall<GetProfilePhotoRequest, GetProfilePhotoResponse>;
+    /**
+     * @generated from protobuf rpc: CreateProfilePhoto(rental.v1.CreateProfilePhotoRequest) returns (rental.v1.CreateProfilePhotoResponse);
+     */
+    createProfilePhoto(input: CreateProfilePhotoRequest, options?: RpcOptions): UnaryCall<CreateProfilePhotoRequest, CreateProfilePhotoResponse>;
+    /**
+     * @generated from protobuf rpc: CompleteProfilePhoto(rental.v1.CompleteProfilePhotoRequest) returns (rental.v1.Identity);
+     */
+    completeProfilePhoto(input: CompleteProfilePhotoRequest, options?: RpcOptions): UnaryCall<CompleteProfilePhotoRequest, Identity>;
+    /**
+     * @generated from protobuf rpc: ClearProfilePhoto(rental.v1.ClearProfilePhotoRequest) returns (rental.v1.ClearProfilePhotoResponse);
+     */
+    clearProfilePhoto(input: ClearProfilePhotoRequest, options?: RpcOptions): UnaryCall<ClearProfilePhotoRequest, ClearProfilePhotoResponse>;
 }
 /**
  * @generated from protobuf service rental.v1.ProfileService
@@ -124,5 +147,33 @@ export class ProfileServiceClient implements IProfileServiceClient, ServiceInfo 
     clearProfile(input: ClearProfileRequest, options?: RpcOptions): UnaryCall<ClearProfileRequest, Profile> {
         const method = this.methods[2], opt = this._transport.mergeOptions(options);
         return stackIntercept<ClearProfileRequest, Profile>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * @generated from protobuf rpc: GetProfilePhoto(rental.v1.GetProfilePhotoRequest) returns (rental.v1.GetProfilePhotoResponse);
+     */
+    getProfilePhoto(input: GetProfilePhotoRequest, options?: RpcOptions): UnaryCall<GetProfilePhotoRequest, GetProfilePhotoResponse> {
+        const method = this.methods[3], opt = this._transport.mergeOptions(options);
+        return stackIntercept<GetProfilePhotoRequest, GetProfilePhotoResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * @generated from protobuf rpc: CreateProfilePhoto(rental.v1.CreateProfilePhotoRequest) returns (rental.v1.CreateProfilePhotoResponse);
+     */
+    createProfilePhoto(input: CreateProfilePhotoRequest, options?: RpcOptions): UnaryCall<CreateProfilePhotoRequest, CreateProfilePhotoResponse> {
+        const method = this.methods[4], opt = this._transport.mergeOptions(options);
+        return stackIntercept<CreateProfilePhotoRequest, CreateProfilePhotoResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * @generated from protobuf rpc: CompleteProfilePhoto(rental.v1.CompleteProfilePhotoRequest) returns (rental.v1.Identity);
+     */
+    completeProfilePhoto(input: CompleteProfilePhotoRequest, options?: RpcOptions): UnaryCall<CompleteProfilePhotoRequest, Identity> {
+        const method = this.methods[5], opt = this._transport.mergeOptions(options);
+        return stackIntercept<CompleteProfilePhotoRequest, Identity>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * @generated from protobuf rpc: ClearProfilePhoto(rental.v1.ClearProfilePhotoRequest) returns (rental.v1.ClearProfilePhotoResponse);
+     */
+    clearProfilePhoto(input: ClearProfilePhotoRequest, options?: RpcOptions): UnaryCall<ClearProfilePhotoRequest, ClearProfilePhotoResponse> {
+        const method = this.methods[6], opt = this._transport.mergeOptions(options);
+        return stackIntercept<ClearProfilePhotoRequest, ClearProfilePhotoResponse>("unary", this._transport, method, opt, input);
     }
 }

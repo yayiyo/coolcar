@@ -15,6 +15,7 @@ const (
 	accountIDField      = "account_id"
 	profileField        = "profile"
 	identityStatusField = profileField + ".identitystatus"
+	photoBlobUDField    = "photo_blob_id"
 )
 
 type Mongo struct {
@@ -28,26 +29,48 @@ func NewMongo(db *mongo.Database) *Mongo {
 }
 
 type ProfileRecord struct {
-	AccountID string            `bson:"account_id"`
-	Profile   *rentalpb.Profile `bson:"profile"`
+	AccountID   string            `bson:"account_id"`
+	Profile     *rentalpb.Profile `bson:"profile"`
+	PhotoBlobID string            `bson:"photo_blob_id"`
 }
 
-func (m *Mongo) GetProfile(ctx context.Context, aid id.AccountID) (*rentalpb.Profile, error) {
+func (m *Mongo) GetProfile(ctx context.Context, aid id.AccountID) (*ProfileRecord, error) {
 	p := &ProfileRecord{}
 	err := m.col.FindOne(ctx, byAccountID(aid)).Decode(p)
 	if err != nil {
 		return nil, err
 	}
-	return p.Profile, nil
+	return p, nil
 }
 
 func (m *Mongo) UpdateProfile(ctx context.Context, aid id.AccountID, prevState rentalpb.IdentityStatus, p *rentalpb.Profile) error {
-	_, err := m.col.UpdateOne(ctx, bson.M{
-		accountIDField:      aid.String(),
+	filter := bson.M{
 		identityStatusField: prevState,
-	}, mgo.Set(bson.M{
+	}
+
+	if prevState == rentalpb.IdentityStatus_NOT_SUBMITTED {
+		filter = mgo.ZeroOrNotExists(identityStatusField, 0)
+	}
+	filter[accountIDField] = aid.String()
+
+	_, err := m.col.UpdateOne(ctx, filter, mgo.Set(bson.M{
 		accountIDField: aid.String(),
 		profileField:   p,
+	}), options.Update().SetUpsert(true))
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *Mongo) UpdateProfilePhoto(ctx context.Context, aid id.AccountID, bid id.BlobID) error {
+	_, err := m.col.UpdateOne(ctx, bson.M{
+		accountIDField: aid.String(),
+	}, mgo.Set(bson.M{
+		accountIDField:   aid.String(),
+		photoBlobUDField: bid.String(),
 	}), options.Update().SetUpsert(true))
 
 	if err != nil {

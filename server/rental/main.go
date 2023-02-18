@@ -3,7 +3,9 @@ package main
 import (
 	"context"
 	"log"
+	"time"
 
+	blobpb "coolcar/blob/api/gen/v1"
 	rentalpb "coolcar/rental/api/gen/v1"
 	"coolcar/rental/profile"
 	profileDao "coolcar/rental/profile/dao"
@@ -17,6 +19,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 func main() {
@@ -30,9 +33,17 @@ func main() {
 		logger.Fatal("can not connect to MongoDB:", zap.Error(err))
 	}
 
+	conn, err := grpc.Dial(":8083", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		logger.Fatal("can not connect to grpc(:8083):", zap.Error(err))
+	}
+
 	profileService := &profile.Service{
-		Mongo:  profileDao.NewMongo(client.Database("coolcar")),
-		Logger: logger,
+		BlobService:       blobpb.NewBlobServiceClient(conn),
+		PhotoGetExpire:    5 * time.Second,
+		PhotoUploadExpire: 10 * time.Second,
+		Mongo:             profileDao.NewMongo(client.Database("coolcar")),
+		Logger:            logger,
 	}
 	logger.Sugar().Fatal(server.RunGRPCServer(&server.GRPCConfig{
 		Name:              "rental",

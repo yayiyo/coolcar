@@ -198,6 +198,49 @@ export interface GetProfileRequest {
 export interface ClearProfileRequest {
 }
 /**
+ * @generated from protobuf message rental.v1.GetProfilePhotoRequest
+ */
+export interface GetProfilePhotoRequest {
+}
+/**
+ * @generated from protobuf message rental.v1.GetProfilePhotoResponse
+ */
+export interface GetProfilePhotoResponse {
+    /**
+     * @generated from protobuf field: string url = 1;
+     */
+    url: string;
+}
+/**
+ * @generated from protobuf message rental.v1.CreateProfilePhotoRequest
+ */
+export interface CreateProfilePhotoRequest {
+}
+/**
+ * @generated from protobuf message rental.v1.CreateProfilePhotoResponse
+ */
+export interface CreateProfilePhotoResponse {
+    /**
+     * @generated from protobuf field: string upload_url = 1;
+     */
+    uploadUrl: string;
+}
+/**
+ * @generated from protobuf message rental.v1.CompleteProfilePhotoRequest
+ */
+export interface CompleteProfilePhotoRequest {
+}
+/**
+ * @generated from protobuf message rental.v1.ClearProfilePhotoRequest
+ */
+export interface ClearProfilePhotoRequest {
+}
+/**
+ * @generated from protobuf message rental.v1.ClearProfilePhotoResponse
+ */
+export interface ClearProfilePhotoResponse {
+}
+/**
  * @generated from protobuf enum rental.v1.TripStatus
  */
 export enum TripStatus {
@@ -950,6 +993,230 @@ class ClearProfileRequest$Type extends MessageType<ClearProfileRequest> {
  * @generated MessageType for protobuf message rental.v1.ClearProfileRequest
  */
 export const ClearProfileRequest = new ClearProfileRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class GetProfilePhotoRequest$Type extends MessageType<GetProfilePhotoRequest> {
+    constructor() {
+        super("rental.v1.GetProfilePhotoRequest", []);
+    }
+    create(value?: PartialMessage<GetProfilePhotoRequest>): GetProfilePhotoRequest {
+        const message = {};
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<GetProfilePhotoRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: GetProfilePhotoRequest): GetProfilePhotoRequest {
+        return target ?? this.create();
+    }
+    internalBinaryWrite(message: GetProfilePhotoRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message rental.v1.GetProfilePhotoRequest
+ */
+export const GetProfilePhotoRequest = new GetProfilePhotoRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class GetProfilePhotoResponse$Type extends MessageType<GetProfilePhotoResponse> {
+    constructor() {
+        super("rental.v1.GetProfilePhotoResponse", [
+            { no: 1, name: "url", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<GetProfilePhotoResponse>): GetProfilePhotoResponse {
+        const message = { url: "" };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<GetProfilePhotoResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: GetProfilePhotoResponse): GetProfilePhotoResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string url */ 1:
+                    message.url = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: GetProfilePhotoResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string url = 1; */
+        if (message.url !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.url);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message rental.v1.GetProfilePhotoResponse
+ */
+export const GetProfilePhotoResponse = new GetProfilePhotoResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class CreateProfilePhotoRequest$Type extends MessageType<CreateProfilePhotoRequest> {
+    constructor() {
+        super("rental.v1.CreateProfilePhotoRequest", []);
+    }
+    create(value?: PartialMessage<CreateProfilePhotoRequest>): CreateProfilePhotoRequest {
+        const message = {};
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<CreateProfilePhotoRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: CreateProfilePhotoRequest): CreateProfilePhotoRequest {
+        return target ?? this.create();
+    }
+    internalBinaryWrite(message: CreateProfilePhotoRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message rental.v1.CreateProfilePhotoRequest
+ */
+export const CreateProfilePhotoRequest = new CreateProfilePhotoRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class CreateProfilePhotoResponse$Type extends MessageType<CreateProfilePhotoResponse> {
+    constructor() {
+        super("rental.v1.CreateProfilePhotoResponse", [
+            { no: 1, name: "upload_url", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<CreateProfilePhotoResponse>): CreateProfilePhotoResponse {
+        const message = { uploadUrl: "" };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<CreateProfilePhotoResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: CreateProfilePhotoResponse): CreateProfilePhotoResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string upload_url */ 1:
+                    message.uploadUrl = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: CreateProfilePhotoResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string upload_url = 1; */
+        if (message.uploadUrl !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.uploadUrl);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message rental.v1.CreateProfilePhotoResponse
+ */
+export const CreateProfilePhotoResponse = new CreateProfilePhotoResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class CompleteProfilePhotoRequest$Type extends MessageType<CompleteProfilePhotoRequest> {
+    constructor() {
+        super("rental.v1.CompleteProfilePhotoRequest", []);
+    }
+    create(value?: PartialMessage<CompleteProfilePhotoRequest>): CompleteProfilePhotoRequest {
+        const message = {};
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<CompleteProfilePhotoRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: CompleteProfilePhotoRequest): CompleteProfilePhotoRequest {
+        return target ?? this.create();
+    }
+    internalBinaryWrite(message: CompleteProfilePhotoRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message rental.v1.CompleteProfilePhotoRequest
+ */
+export const CompleteProfilePhotoRequest = new CompleteProfilePhotoRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class ClearProfilePhotoRequest$Type extends MessageType<ClearProfilePhotoRequest> {
+    constructor() {
+        super("rental.v1.ClearProfilePhotoRequest", []);
+    }
+    create(value?: PartialMessage<ClearProfilePhotoRequest>): ClearProfilePhotoRequest {
+        const message = {};
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<ClearProfilePhotoRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ClearProfilePhotoRequest): ClearProfilePhotoRequest {
+        return target ?? this.create();
+    }
+    internalBinaryWrite(message: ClearProfilePhotoRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message rental.v1.ClearProfilePhotoRequest
+ */
+export const ClearProfilePhotoRequest = new ClearProfilePhotoRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class ClearProfilePhotoResponse$Type extends MessageType<ClearProfilePhotoResponse> {
+    constructor() {
+        super("rental.v1.ClearProfilePhotoResponse", []);
+    }
+    create(value?: PartialMessage<ClearProfilePhotoResponse>): ClearProfilePhotoResponse {
+        const message = {};
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<ClearProfilePhotoResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ClearProfilePhotoResponse): ClearProfilePhotoResponse {
+        return target ?? this.create();
+    }
+    internalBinaryWrite(message: ClearProfilePhotoResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message rental.v1.ClearProfilePhotoResponse
+ */
+export const ClearProfilePhotoResponse = new ClearProfilePhotoResponse$Type();
 /**
  * @generated ServiceType for protobuf service rental.v1.TripService
  */
@@ -965,5 +1232,9 @@ export const TripService = new ServiceType("rental.v1.TripService", [
 export const ProfileService = new ServiceType("rental.v1.ProfileService", [
     { name: "GetProfile", options: {}, I: GetProfileRequest, O: Profile },
     { name: "SubmitProfile", options: {}, I: Identity, O: Profile },
-    { name: "ClearProfile", options: {}, I: ClearProfileRequest, O: Profile }
+    { name: "ClearProfile", options: {}, I: ClearProfileRequest, O: Profile },
+    { name: "GetProfilePhoto", options: {}, I: GetProfilePhotoRequest, O: GetProfilePhotoResponse },
+    { name: "CreateProfilePhoto", options: {}, I: CreateProfilePhotoRequest, O: CreateProfilePhotoResponse },
+    { name: "CompleteProfilePhoto", options: {}, I: CompleteProfilePhotoRequest, O: Identity },
+    { name: "ClearProfilePhoto", options: {}, I: ClearProfilePhotoRequest, O: ClearProfilePhotoResponse }
 ]);

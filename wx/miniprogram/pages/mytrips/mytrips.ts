@@ -72,7 +72,7 @@ Page({
                 promotionID: 4,
             },
         ],
-        licStatus: licStatusMap.get(IdentityStatus.NOT_SUBMITTED),
+        licStatus: licStatusMap.get(IdentityStatus.NOT_SUBMITTED || 0),
         avatarURL: '',
         tripsHeight: 0,
         navCount: 0,
@@ -96,7 +96,7 @@ Page({
     onShow() {
         ProfileService.getProfile().then(p => {
             this.setData({
-                licStatus: licStatusMap.get(p.identityStatus)
+                licStatus: licStatusMap.get(p.identityStatus || 0)
             })
         })
     },
@@ -117,7 +117,7 @@ Page({
         const navItems: NavItem[] = []
         let navSel = ''
         let prevNav = ''
-        for (let i = 0; i < trips.length; i++) {
+        for (let i = 0; i < trips?.length || 0; i++) {
             const trip = trips[i]
             const mainId = 'main-' + i
             const navId = 'nav-' + i
