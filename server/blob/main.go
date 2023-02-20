@@ -27,9 +27,9 @@ func main() {
 	}
 
 	st, err := cos.NewService(
-		"",
-		"",
-		"",
+		"https://coolcar-1255667223.cos.ap-beijing.myqcloud.com",
+		"AKIDwqiU9g5LRRM6h9jDVbT8e0AGKFxQhrpo",
+		"sbFzZ5QaWPAi3A4kEf6NbuAKPL6rkdZW",
 	)
 	if err != nil {
 		logger.Fatal("can not create cos service:", zap.Error(err))

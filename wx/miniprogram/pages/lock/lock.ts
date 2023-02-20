@@ -28,7 +28,7 @@ Page({
     onUnlockTap() {
         wx.getLocation({
             success: async loc => {
-                console.log('startting a trip', {
+                console.log('starting a trip', {
                     location: {
                         latitude: loc.latitude,
                         longitude: loc.longitude,

@@ -10,6 +10,7 @@ import (
 	"coolcar/rental/trip/dao"
 	"coolcar/shared/auth"
 	"coolcar/shared/id"
+	"coolcar/shared/mongo/objid"
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -32,7 +33,8 @@ type ProfileManager interface {
 // CarManager defines the ACL for car management.
 type CarManager interface {
 	Verify(ctx context.Context, carID id.CarID, location *rentalpb.Location) error
-	Unlock(ctx context.Context, carID id.CarID) error
+	Unlock(ctx context.Context, carID id.CarID, aid id.AccountID, tid id.TripID, avatar string) error
+	Lock(ctx context.Context, carID id.CarID) error
 }
 
 // POIManager resolves the POI(Point Of Interest).
@@ -80,7 +82,7 @@ func (s *Service) CreateTrip(ctx context.Context, req *rentalpb.CreateTripReques
 	}
 	// 车辆开锁
 	go func() {
-		err = s.CarManager.Unlock(ctx, carID)
+		err = s.CarManager.Unlock(ctx, carID, accountID, objid.ToTripID(trip.ID), req.AvatarUrl)
 		if err != nil {
 			s.Logger.Error("can't unlock car", zap.Error(err))
 		}
@@ -150,10 +152,22 @@ func (s *Service) UpdateTrip(ctx context.Context, req *rentalpb.UpdateTripReques
 	}
 	trip.Trip.Current = s.calcCurrentStatus(ctx, trip.Trip.Current, cur.Location)
 
-	if req.Current != nil {
-		trip.Trip.Current = s.calcCurrentStatus(ctx, trip.Trip.Current, req.Current.Location)
+	if req.EndTrip {
+		trip.Trip.End = trip.Trip.Current
+		trip.Trip.Status = rentalpb.TripStatus_FINISHED
+		err = s.CarManager.Lock(ctx, id.CarID(trip.Trip.CarId))
+		if err != nil {
+			s.Logger.Error("lock car failed", zap.String("car_id", trip.Trip.CarId), zap.Error(err))
+			return nil, status.Error(codes.FailedPrecondition, "lock car failed")
+		}
 	}
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateTrip not implemented")
+
+	err = s.Mongo.UpdateTrip(ctx, id.TripID(req.Id), aid, trip.UpdateAt, trip.Trip)
+	if err != nil {
+		s.Logger.Error("update trip failed", zap.Error(err))
+		return nil, status.Error(codes.Internal, "")
+	}
+	return trip.Trip, nil
 }
 
 var nowFunc = func() int64 {
