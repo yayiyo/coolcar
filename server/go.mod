@@ -7,9 +7,11 @@ require (
 	github.com/docker/go-connections v0.4.0
 	github.com/golang-jwt/jwt/v4 v4.4.3
 	github.com/google/go-cmp v0.5.9
+	github.com/gorilla/websocket v1.5.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.14.0
 	github.com/medivhzhan/weapp/v2 v2.5.0
 	github.com/pkg/errors v0.9.1
+	github.com/rabbitmq/amqp091-go v1.7.0
 	github.com/tencentyun/cos-go-sdk-v5 v0.7.41
 	go.mongodb.org/mongo-driver v1.11.1
 	go.uber.org/zap v1.24.0
@@ -34,7 +36,6 @@ require (
 	github.com/mozillazg/go-httpheader v0.3.1 // indirect
 	github.com/opencontainers/go-digest v1.0.0 // indirect
 	github.com/opencontainers/image-spec v1.0.2 // indirect
-	github.com/rabbitmq/amqp091-go v1.7.0 // indirect
 	github.com/sirupsen/logrus v1.9.0 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.1.1 // indirect

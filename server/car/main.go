@@ -3,13 +3,16 @@ package main
 import (
 	"context"
 	"log"
+	"net/http"
 
 	carpb "coolcar/car/api/gen/v1"
 	"coolcar/car/car"
 	"coolcar/car/dao"
 	"coolcar/car/mq/amqpclt"
 	"coolcar/car/sim"
+	"coolcar/car/ws"
 	"coolcar/shared/server"
+	"github.com/gorilla/websocket"
 	amqp "github.com/rabbitmq/amqp091-go"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -56,6 +59,18 @@ func main() {
 	}
 
 	go simController.RunSimulations(context.Background())
+
+	u := &websocket.Upgrader{
+		CheckOrigin: func(r *http.Request) bool {
+			return true
+		},
+	}
+	http.HandleFunc("/ws", ws.Handler(u, sub, logger))
+	go func() {
+		addr := ":9090"
+		logger.Info("starting http server", zap.String("at", addr))
+		logger.Sugar().Fatal(http.ListenAndServe(addr, nil))
+	}()
 
 	logger.Sugar().Fatal(server.RunGRPCServer(&server.GRPCConfig{
 		Name: "car",

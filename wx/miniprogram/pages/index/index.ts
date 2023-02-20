@@ -6,11 +6,13 @@ import {routing} from "../../utils/routing"
 import {TripService} from "../../service/trip";
 import {IdentityStatus, TripStatus} from "../../service/proto_gen/rental/rental";
 import {ProfileService} from "../../service/profile";
+import {CarService} from "../../service/car";
 
 const app = getApp<IAppOption>()
 
 Page({
     isPageShowing: false,
+    socket: undefined as WechatMiniprogram.SocketTask | undefined,
     avatarURL: '',
     data: {
         setting: {
@@ -54,6 +56,11 @@ Page({
         ],
     },
     onLoad() {
+
+        this.socket = CarService.subscribe(msg => {
+            console.log(msg)
+        })
+
         const avatarURL = wx.getStorageSync('avatar')
         this.setData({
             avatarURL,
