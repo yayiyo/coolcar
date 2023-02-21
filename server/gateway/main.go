@@ -36,6 +36,11 @@ func main() {
 			UseProtoNames:  true,
 		},
 		UnmarshalOptions: protojson.UnmarshalOptions{},
+	}), runtime.WithIncomingHeaderMatcher(func(key string) (string, bool) {
+		if key == textproto.CanonicalMIMEHeaderKey(runtime.MetadataHeaderPrefix+auth.ImpersonateAccountHeader) {
+			return "", false
+		}
+		return runtime.DefaultHeaderMatcher(key)
 	}))
 
 	serverConfig := []struct {
