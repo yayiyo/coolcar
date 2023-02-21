@@ -82,7 +82,7 @@ func (s *Service) CreateTrip(ctx context.Context, req *rentalpb.CreateTripReques
 	}
 	// 车辆开锁
 	go func() {
-		err = s.CarManager.Unlock(ctx, carID, accountID, objid.ToTripID(trip.ID), req.AvatarUrl)
+		err = s.CarManager.Unlock(context.Background(), carID, accountID, objid.ToTripID(trip.ID), req.AvatarUrl)
 		if err != nil {
 			s.Logger.Error("can't unlock car", zap.Error(err))
 		}
@@ -104,6 +104,7 @@ func (s *Service) GetTrip(ctx context.Context, req *rentalpb.GetTripRequest) (*r
 	if err != nil {
 		return nil, status.Error(codes.NotFound, "")
 	}
+	s.Logger.Sugar().Infof("get trip %+v", tr.Trip)
 	return tr.Trip, nil
 }
 func (s *Service) GetTrips(ctx context.Context, req *rentalpb.GetTripsRequest) (*rentalpb.GetTripsResponse, error) {
@@ -167,6 +168,7 @@ func (s *Service) UpdateTrip(ctx context.Context, req *rentalpb.UpdateTripReques
 		s.Logger.Error("update trip failed", zap.Error(err))
 		return nil, status.Error(codes.Internal, "")
 	}
+	s.Logger.Sugar().Infof("update trip %+v", trip.Trip)
 	return trip.Trip, nil
 }
 

@@ -78,6 +78,7 @@ export namespace CoolCar {
                     reject(AUTH_ERROR)
                     return
                 }
+                header['Grpc-Metadata-impersonate-account-id'] = 'bad-request'
             }
             wx.request({
                 url: serverAddr + o.path,

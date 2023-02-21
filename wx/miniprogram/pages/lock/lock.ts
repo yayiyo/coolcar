@@ -1,8 +1,11 @@
 import {routing} from "../../utils/routing"
 import {TripService} from "../../service/trip";
+import {CarService} from "../../service/car";
+import {CarStatus} from "../../service/proto_gen/car/car";
 
 Page({
     carId: '',
+    carRefresher: 0,
     data: {
         avatarUrl: '',
     },
@@ -47,6 +50,7 @@ Page({
                         longitude: loc.longitude,
                     },
                     carId: this.carId,
+                    avatarUrl: this.data.avatarUrl,
                 })
 
                 if (!trip.id) {
@@ -58,13 +62,17 @@ Page({
                     title: '开锁中',
                 })
 
-                setTimeout(function () {
-                    wx.redirectTo({
-                        url: routing.driving({
-                            trip_id: trip.id,
-                        }),
-                    })
-                }, 3000)
+                this.carRefresher = setInterval(async () => {
+                    const car = await CarService.getCar(this.carId)
+                    if (car.status === CarStatus.UNLOCKED) {
+                        this.clearRefresher()
+                        wx.redirectTo({
+                            url: routing.driving({
+                                trip_id: trip.id,
+                            }),
+                        })
+                    }
+                }, 2000)
             },
             fail: () => {
                 wx.showToast({
@@ -73,5 +81,16 @@ Page({
                 })
             }
         })
-    }
+    },
+
+    onUnload() {
+        this.clearRefresher()
+        wx.hideLoading()
+    },
+    clearRefresher() {
+        if (this.carRefresher) {
+            clearInterval(this.carRefresher)
+            this.carRefresher = 0
+        }
+    },
 })

@@ -49,7 +49,10 @@ func Handler(u *websocket.Upgrader, sub mq.Subscriber, logger *zap.Logger) http.
 				logger.Info("received message, sending to websocket")
 				err = conn.WriteJSON(msg)
 				if err != nil {
-					logger.Error("error writing websocket", zap.Error(err))
+					if !websocket.IsCloseError(err, websocket.CloseGoingAway, websocket.CloseNormalClosure) {
+						logger.Error("error writing websocket", zap.Error(err))
+						return
+					}
 				}
 			case <-done:
 				return

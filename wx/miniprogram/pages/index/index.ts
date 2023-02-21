@@ -102,7 +102,7 @@ Page({
 
         wx.scanCode({
             success: async () => {
-                const car_id = '63f1e13c288896196b07f274'
+                const car_id = '63f1e13c288896196b07f276'
                 const lockUrl = routing.lock({car_id})
                 const profile = await ProfileService.getProfile()
                 if (profile.identityStatus === IdentityStatus.VERIFIED) {

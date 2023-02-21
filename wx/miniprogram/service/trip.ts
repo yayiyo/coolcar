@@ -1,10 +1,10 @@
 import {
     CreateTripRequest,
-    GetTripRequest,
     GetTripsResponse,
     Trip,
     TripEntity,
-    TripStatus
+    TripStatus,
+    UpdateTripRequest
 } from "./proto_gen/rental/rental";
 import {CoolCar} from "./request";
 
@@ -18,7 +18,7 @@ export namespace TripService {
         })
     }
 
-    export function getTrip(id :string): Promise<Trip> {
+    export function getTrip(id: string): Promise<Trip> {
         return CoolCar.sendRequestWithAuthRetry({
             path: `/v1/trips/${encodeURIComponent(id)}`,
             method: 'GET',
@@ -35,6 +35,25 @@ export namespace TripService {
             path,
             method: 'GET',
             resMarshal: GetTripsResponse.fromJson,
+        })
+    }
+
+    export function finishTrip(id: string) {
+        return updateTrip({
+            id,
+            endTrip: true,
+        })
+    }
+
+    function updateTrip(r: UpdateTripRequest): Promise<Trip> {
+        if (!r.id) {
+            return Promise.reject("must specify id")
+        }
+        return CoolCar.sendRequestWithAuthRetry({
+            method: 'PUT',
+            path: `/v1/trips/${encodeURIComponent(r.id)}`,
+            data: r,
+            resMarshal: Trip.fromJson,
         })
     }
 }

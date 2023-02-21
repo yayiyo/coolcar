@@ -2,6 +2,7 @@ package auth
 
 import (
 	"context"
+	"fmt"
 	"io/ioutil"
 	"strings"
 
@@ -16,8 +17,9 @@ import (
 )
 
 const (
-	authorization = "authorization"
-	bearerPrefix  = "Bearer "
+	ImpersonateAccountHeader = "impersonate-account-id"
+	authorization            = "authorization"
+	bearerPrefix             = "Bearer "
 )
 
 func Interceptor(publicKey string) (grpc.UnaryServerInterceptor, error) {
@@ -49,6 +51,11 @@ type interceptor struct {
 }
 
 func (i *interceptor) HandleReq(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
+	aid := impersonateFromContext(ctx)
+	if aid != "" {
+		fmt.Println("aid: ", aid)
+		return handler(ContextWithAccountID(ctx, id.AccountID(aid)), req)
+	}
 	token, err := tokenFromContext(ctx)
 	if err != nil {
 		return nil, status.Error(codes.Unauthenticated, "")
@@ -58,6 +65,19 @@ func (i *interceptor) HandleReq(ctx context.Context, req interface{}, info *grpc
 		return nil, status.Errorf(codes.Unauthenticated, "token verification failed: %v", err)
 	}
 	return handler(ContextWithAccountID(ctx, id.AccountID(accountID)), req)
+}
+
+func impersonateFromContext(ctx context.Context) string {
+	m, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return ""
+	}
+
+	imp := m[ImpersonateAccountHeader]
+	if len(imp) == 0 {
+		return ""
+	}
+	return imp[0]
 }
 
 func tokenFromContext(ctx context.Context) (string, error) {

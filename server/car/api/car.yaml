@@ -8,4 +8,4 @@ http:
       body: "*"
 
     - selector: car.v1.CarService.GetCar
-      get: /v1/car
+      get: /v1/car/{id}

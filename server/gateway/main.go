@@ -4,9 +4,12 @@ import (
 	"context"
 	"log"
 	"net/http"
+	"net/textproto"
 
 	authpb "coolcar/auth/api/gen/v1"
+	carpb "coolcar/car/api/gen/v1"
 	rentalpb "coolcar/rental/api/gen/v1"
+	"coolcar/shared/auth"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -54,6 +57,11 @@ func main() {
 			name:         "profile",
 			addr:         ":8082",
 			registerFunc: rentalpb.RegisterProfileServiceHandlerFromEndpoint,
+		},
+		{
+			name:         "car",
+			addr:         ":8084",
+			registerFunc: carpb.RegisterCarServiceHandlerFromEndpoint,
 		},
 	}
 

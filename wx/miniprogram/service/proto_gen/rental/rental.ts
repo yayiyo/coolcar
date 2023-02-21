@@ -108,6 +108,10 @@ export interface CreateTripRequest {
      * @generated from protobuf field: string car_id = 2;
      */
     carId: string;
+    /**
+     * @generated from protobuf field: string avatar_url = 3;
+     */
+    avatarUrl: string;
 }
 /**
  * @generated from protobuf message rental.v1.GetTripRequest
@@ -568,11 +572,12 @@ class CreateTripRequest$Type extends MessageType<CreateTripRequest> {
     constructor() {
         super("rental.v1.CreateTripRequest", [
             { no: 1, name: "start", kind: "message", T: () => Location },
-            { no: 2, name: "car_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+            { no: 2, name: "car_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "avatar_url", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<CreateTripRequest>): CreateTripRequest {
-        const message = { carId: "" };
+        const message = { carId: "", avatarUrl: "" };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<CreateTripRequest>(this, message, value);
@@ -588,6 +593,9 @@ class CreateTripRequest$Type extends MessageType<CreateTripRequest> {
                     break;
                 case /* string car_id */ 2:
                     message.carId = reader.string();
+                    break;
+                case /* string avatar_url */ 3:
+                    message.avatarUrl = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -607,6 +615,9 @@ class CreateTripRequest$Type extends MessageType<CreateTripRequest> {
         /* string car_id = 2; */
         if (message.carId !== "")
             writer.tag(2, WireType.LengthDelimited).string(message.carId);
+        /* string avatar_url = 3; */
+        if (message.avatarUrl !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.avatarUrl);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

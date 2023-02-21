@@ -1,4 +1,4 @@
-import {CarEntity} from "./proto_gen/car/car";
+import {Car, CarEntity} from "./proto_gen/car/car";
 import {CoolCar} from "./request";
 import camelcaseKeys from "camelcase-keys";
 
@@ -16,5 +16,13 @@ export namespace CarService {
             })))
         })
         return socket
+    }
+
+    export function getCar(id: string): Promise<Car> {
+        return CoolCar.sendRequestWithAuthRetry({
+            method: 'GET',
+            path: `/v1/car/${encodeURIComponent(id)}`,
+            resMarshal: Car.fromJson,
+        })
     }
 }

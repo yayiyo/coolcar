@@ -1,9 +1,17 @@
 import {routing} from "../../utils/routing"
 import {TripService} from "../../service/trip";
-import {parseString} from "../../utils/format";
+import {formatDuration, formatFee, parseString} from "../../utils/format";
+import {Trip, TripStatus} from "../../service/proto_gen/rental/rental";
 
-// 每秒一分钱
-const centPerSec = 0.8
+
+const updateIntervalSec = 5
+const initialLat = 30
+const initialLng = 120
+
+function durationStr(sec: number) {
+    const dur = formatDuration(sec)
+    return `${dur.hh}:${dur.mm}:${dur.ss}`
+}
 
 function formatTime(second: number) {
     const h = Math.floor(second / 3600)
@@ -14,28 +22,35 @@ function formatTime(second: number) {
     return `${parseString(h)}:${parseString(m)}:${parseString(s)}`
 }
 
-function formatFee(cent: number) {
-    return (cent / 100).toFixed(2)
-}
-
 Page({
     timer: undefined as number | undefined,
+    tripID: '',
     data: {
         location: {
-            latitude: 40.22077,
-            longitude: 116.23128,
+            latitude: initialLat,
+            longitude: initialLng,
         },
         scale: 12,
         elapsed: '00:00:00',
         fee: '0.00',
+        markers: [
+            {
+                iconPath: "/resources/car.png",
+                id: 0,
+                latitude: initialLat,
+                longitude: initialLng,
+                width: 20,
+                height: 20,
+            },
+        ],
     },
 
     onLoad(opt: Record<'trip_id', string>) {
         const o: routing.DriveOpts = opt
         console.log('current trip', o.trip_id)
-        TripService.getTrip(o.trip_id).then(console.log)
+        this.tripID = o.trip_id
         this.setupLocationUpdator()
-        this.setupTimer()
+        this.setupTimer(o.trip_id)
     },
 
     onUnload() {
@@ -59,22 +74,62 @@ Page({
             })
         })
     },
-    setupTimer() {
-        let elapsedSec = 0
-        let cents = 0
+    async setupTimer(tripID: string) {
+        const trip = await TripService.getTrip(tripID)
+        if (trip.status !== TripStatus.IN_PROGRESS) {
+            console.error('trip not in progress')
+            return
+        }
+        let secSinceLastUpdate = 0
+        let lastUpdateDurationSec = trip.current!.timestampSec! - trip.start!.timestampSec!
+        const toLocation = (trip: Trip) => ({
+            latitude: trip.current?.location?.latitude || initialLat,
+            longitude: trip.current?.location?.longitude || initialLng,
+        })
+        const location = toLocation(trip)
+        this.data.markers[0].latitude = location.latitude
+        this.data.markers[0].longitude = location.longitude
+        this.setData({
+            elapsed: durationStr(Number(lastUpdateDurationSec)),
+            fee: formatFee(trip.current?.feeCent || 0),
+            location,
+            markers: this.data.markers,
+        })
+
         this.timer = setInterval(() => {
-            cents += centPerSec
-            elapsedSec++
+            secSinceLastUpdate++
+            if (secSinceLastUpdate % updateIntervalSec === 0) {
+                TripService.getTrip(tripID).then(trip => {
+                    console.log(trip)
+                    lastUpdateDurationSec = trip.current!.timestampSec! - trip.start!.timestampSec!
+                    secSinceLastUpdate = 0
+                    const location = toLocation(trip)
+                    this.data.markers[0].latitude = location.latitude
+                    this.data.markers[0].longitude = location.longitude
+                    this.setData({
+                        fee: formatFee(trip.current?.feeCent || 0),
+                        location,
+                        markers: this.data.markers,
+                    })
+                }).catch(console.error)
+            }
             this.setData({
-                elapsed: formatTime(elapsedSec),
-                fee: formatFee(cents),
+                elapsed: durationStr(Number(lastUpdateDurationSec) + secSinceLastUpdate),
             })
         }, 1000)
     },
 
     onEndTripTap() {
-        wx.redirectTo({
-            url: routing.mytrips(),
+        TripService.finishTrip(this.tripID).then(() => {
+            wx.redirectTo({
+                url: routing.mytrips(),
+            })
+        }).catch(err => {
+            console.error(err)
+            wx.showToast({
+                title: '结束行程失败',
+                icon: 'none',
+            })
         })
     }
 })
