@@ -11,16 +11,26 @@ import (
 	rentalpb "coolcar/rental/api/gen/v1"
 	"coolcar/shared/auth"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/namsral/flag"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
+var (
+	addr        = flag.String("addr", ":8080", "address to connect")
+	authAddr    = flag.String("auth_addr", ":8081", "auth address to connect")
+	tripAddr    = flag.String("trip_addr", ":8082", "trip address to connect")
+	profileAddr = flag.String("profile_addr", ":8082", "profile address to connect")
+	carAddr     = flag.String("car_addr", ":8084", "car address to connect")
+)
+
 func main() {
 	var (
 		err error
 	)
+	flag.Parse()
 	logger, err := zap.NewDevelopment()
 	if err != nil {
 		log.Fatalf("can not create zap logger: %v", err)
@@ -50,22 +60,22 @@ func main() {
 	}{
 		{
 			name:         "auth",
-			addr:         ":8081",
+			addr:         *authAddr,
 			registerFunc: authpb.RegisterAuthServiceHandlerFromEndpoint,
 		},
 		{
 			name:         "trip",
-			addr:         ":8082",
+			addr:         *tripAddr,
 			registerFunc: rentalpb.RegisterTripServiceHandlerFromEndpoint,
 		},
 		{
 			name:         "profile",
-			addr:         ":8082",
+			addr:         *profileAddr,
 			registerFunc: rentalpb.RegisterProfileServiceHandlerFromEndpoint,
 		},
 		{
 			name:         "car",
-			addr:         ":8084",
+			addr:         *carAddr,
 			registerFunc: carpb.RegisterCarServiceHandlerFromEndpoint,
 		},
 	}
@@ -79,9 +89,8 @@ func main() {
 		}
 	}
 
-	addr := ":8080"
 	logger.Sugar().Infof("gateway starting at %s\n", addr)
-	err = http.ListenAndServe(addr, mux)
+	err = http.ListenAndServe(*addr, mux)
 	if err != nil {
 		logger.Sugar().Fatalf("can not listen and serve: %v", err)
 	}

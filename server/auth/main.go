@@ -13,19 +13,36 @@ import (
 	"coolcar/auth/wechat"
 	"coolcar/shared/server"
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/namsral/flag"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
 
+var (
+	addr      = flag.String("addr", ":8081", "address to connect")
+	appID     = flag.String("app_id", "", "wechat app id, required")
+	appSecret = flag.String("app_secret", "", "wechat app secret, required")
+	mongoURL  = flag.String("mongo_url", "mongodb://localhost:27017", "mongodb url to connect")
+)
+
 func main() {
+	flag.Parse()
 	logger, err := zap.NewDevelopment()
 	if err != nil {
 		log.Fatalf("can not create zap logger: %v", err)
 	}
 
-	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI("mongodb://localhost:27017"))
+	if *appID == "" {
+		logger.Fatal("app_id can not be empty")
+	}
+
+	if *appSecret == "" {
+		logger.Fatal("app secret can not be empty")
+	}
+
+	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(*mongoURL))
 	if err != nil {
 		logger.Fatal("can not connect to MongoDB:", zap.Error(err))
 	}
@@ -42,12 +59,12 @@ func main() {
 
 	logger.Sugar().Fatal(server.RunGRPCServer(&server.GRPCConfig{
 		Name: "auth",
-		Addr: ":8081",
+		Addr: *addr,
 		RegisterFunc: func(s *grpc.Server) {
 			authpb.RegisterAuthServiceServer(s, &auth.Service{
 				OpenIDResolver: &wechat.Service{
-					AppID:     "wx006574c1921658af",
-					AppSecret: "8bde3a5eb25d40cd58501ed7e3dca226",
+					AppID:     *appID,
+					AppSecret: *appSecret,
 				},
 				TokenGenerator: token.NewJWTGenerator("coolcar/auth", key),
 				TokenExpire:    2 * time.Hour,

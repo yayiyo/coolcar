@@ -10,6 +10,7 @@ require (
 	github.com/gorilla/websocket v1.5.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.14.0
 	github.com/medivhzhan/weapp/v2 v2.5.0
+	github.com/namsral/flag v1.7.4-pre
 	github.com/pkg/errors v0.9.1
 	github.com/rabbitmq/amqp091-go v1.7.0
 	github.com/tencentyun/cos-go-sdk-v5 v0.7.41
